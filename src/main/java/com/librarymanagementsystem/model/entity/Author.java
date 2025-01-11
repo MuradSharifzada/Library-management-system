@@ -35,9 +35,11 @@ public class Author {
 
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinTable(name = "authors_book",
+    @JoinTable(name = "authors_books",
             joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "books_id"))
+            inverseJoinColumns = @JoinColumn(name = "book_id"))
     List<Book> books;
+
+
 
 }
