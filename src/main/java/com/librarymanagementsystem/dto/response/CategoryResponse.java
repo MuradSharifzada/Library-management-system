@@ -14,4 +14,5 @@ public class CategoryResponse {
     String name;
     String description;
     String type;
+
 }

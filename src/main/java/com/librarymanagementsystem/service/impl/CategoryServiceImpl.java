@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category existingCategory = categoryRepository.findById(id).orElseThrow(() -> {
             log.error("Category update failed - category with ID: {} not found", id);
-            return new ResourceNotFoundException("Category not found with ID: " + id);
+            throw  new ResourceNotFoundException("Category not found with ID: " + id);
         });
 
         Category updatedCategory = categoryMapper.requestToEntity(request);
@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findById(id).orElseThrow(() -> {
             log.error("Category retrieval failed - category with ID: {} not found", id);
-            return new ResourceNotFoundException("Category not found with ID: " + id);
+            throw  new ResourceNotFoundException("Category not found with ID: " + id);
         });
 
         log.info("Successfully retrieved category with ID: {}", id);
@@ -95,7 +95,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findById(id).orElseThrow(() -> {
             log.error("Category deleting failed - category with ID: {} not found", id);
-            return new ResourceNotFoundException("Category not found with ID: " + id + " for deleting");
+            throw new ResourceNotFoundException("Category not found with ID: " + id + " for deleting");
         });
         log.info("Successfully deleted category with ID: {}", id);
         categoryRepository.deleteById(id);

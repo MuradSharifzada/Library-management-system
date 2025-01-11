@@ -36,7 +36,6 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(categoryService.getCategoryById(id));
