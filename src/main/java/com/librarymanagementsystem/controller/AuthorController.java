@@ -69,7 +69,7 @@ public class AuthorController {
             Model model) {
         if (result.hasErrors()) {
             model.addAttribute("authorRequest", authorRequest);
-            model.addAttribute("authorId", id); // Include the ID for re-rendering
+            model.addAttribute("authorId", id);
             return "author/edit-author";
         }
         try {

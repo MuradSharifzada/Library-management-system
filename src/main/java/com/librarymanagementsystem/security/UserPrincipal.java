@@ -1,43 +1,33 @@
 package com.librarymanagementsystem.security;
 
-import com.librarymanagementsystem.model.enums.Role;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.librarymanagementsystem.model.User;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
-@NoArgsConstructor
-@Getter
-@Setter
 public class UserPrincipal implements UserDetails {
 
-    private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private Boolean locked;
-    private Role role;
+    private final User user;
 
+    public UserPrincipal(User user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return Collections.emptyList();
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getEmail();
     }
 
     @Override
@@ -47,7 +37,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !locked;
+        return !user.isLocked();
     }
 
     @Override

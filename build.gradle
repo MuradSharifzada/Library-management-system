@@ -44,6 +44,9 @@ dependencies {
 
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+    implementation 'org.springframework.session:spring-session-jdbc:3.4.1'
+
 }
 
 tasks.named('test') {

@@ -26,8 +26,8 @@ public class User {
     String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role=Role.ADMIN;
 
-    private Boolean locked;
+     boolean locked=false;
 
-}
+};
