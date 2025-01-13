@@ -1,28 +1,36 @@
 package com.librarymanagementsystem.dto.response;
 
-import com.librarymanagementsystem.model.entity.Book;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthorResponse {
+public class BookResponse {
 
     Long id;
+    String name;
 
-    String firstName;
+    String description;
 
-    String lastName;
+    String isbn;
 
-    LocalDate birthDay;
+    int stockCount;
 
-    String biography;
 
-    Set<Book> books;
+    LocalDate publishedTime;
+
+
+    String category;
+
+
+    List<String> authorsName;
+
+
+    String bookImage;
 
 
 }
