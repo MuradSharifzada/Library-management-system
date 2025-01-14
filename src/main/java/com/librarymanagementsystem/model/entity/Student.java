@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -40,8 +41,7 @@ public class Student {
 
     LocalDate birthDate;
 
-    @Column(nullable = false)
-    LocalDate enrollmentDate;
+    LocalDateTime enrollmentDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "student")
     List<Order> orders;

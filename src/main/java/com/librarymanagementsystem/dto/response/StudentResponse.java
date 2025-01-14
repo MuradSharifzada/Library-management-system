@@ -12,7 +12,7 @@ public class StudentResponse {
 
     String FIN;
 
-    String first_name;
+    String firstName;
 
     String email;
 
@@ -21,6 +21,8 @@ public class StudentResponse {
     String studentGroup;
 
     LocalDate birthDate;
+
+    LocalDate enrollmentDate;
 
 
 }

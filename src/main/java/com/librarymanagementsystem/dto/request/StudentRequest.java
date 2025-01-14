@@ -24,7 +24,7 @@ public class StudentRequest {
     String lastName;
 
     @NotNull(message = "Email address must not be null.")
-    @Email(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = "Email must be a valid Gmail address.")
+    @Email(message = "Email must be a valid Gmail address.")
     String email;
 
     @NotBlank(message = "Phone number must not be blank.")
