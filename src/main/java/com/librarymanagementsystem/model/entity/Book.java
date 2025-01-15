@@ -38,7 +38,7 @@ public class Book {
     @Column(name = "published_time")
     LocalDate publishedTime;
 
-    @ManyToMany(mappedBy = "books")
+    @ManyToMany(mappedBy = "books",cascade = CascadeType.REMOVE)
     List<Author> authors;
 
     @ManyToOne()

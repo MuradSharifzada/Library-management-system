@@ -29,7 +29,7 @@ public class BookController {
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAllBooks(
             @RequestParam(defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(defaultValue = "5", required = false) int size) {
+            @RequestParam(defaultValue = "10", required = false) int size) {
         List<BookResponse> books = bookService.getAllBooks(pageNumber, size);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }

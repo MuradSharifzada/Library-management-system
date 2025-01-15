@@ -1,84 +1,52 @@
 package com.librarymanagementsystem.controller;
 
 import com.librarymanagementsystem.dto.request.AuthorRequest;
+import com.librarymanagementsystem.dto.response.AuthorResponse;
 import com.librarymanagementsystem.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@RequestMapping("/api/v1/authors")
 @RequiredArgsConstructor
 public class AuthorController {
 
     private final AuthorService authorService;
 
-    @GetMapping("/authors/create")
-    public String createAuthorForm(Model model) {
-        model.addAttribute("authorRequest", new AuthorRequest());
-        return "author/create-author";
-    }
-
-    @PostMapping("/authors/create")
-    public String createAuthor(
-            @Valid @ModelAttribute("authorRequest") AuthorRequest authorRequest,
-            BindingResult result,
-            Model model) {
-        if (result.hasErrors()) {
-            return "author/create-author";
-        }
+    @PostMapping()
+    public ResponseEntity<String> createAuthor(@Valid @RequestBody AuthorRequest authorRequest) {
         authorService.createAuthor(authorRequest);
-        return "redirect:/authors";
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Author created successfully");
     }
 
-    @GetMapping("/authors")
-    public String getAllAuthors(Model model) {
-        model.addAttribute("authors", authorService.getAllAuthors());
-        return "author/list";
+    @GetMapping
+    public ResponseEntity<?> getAllAuthors() {
+        return ResponseEntity.ok(authorService.getAllAuthors());
     }
 
-
-    @GetMapping("/authors/{id:\\d+}")
-    public String getAuthorById(@PathVariable Long id, Model model) {
-        try {
-            model.addAttribute("author", authorService.getAuthorById(id));
-            return "author/author";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Author not found with ID: " + id);
-            return "error";
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAuthorById(@PathVariable(name = "id") Long id) {
+        AuthorResponse authorResponse = authorService.getAuthorById(id);
+        return ResponseEntity.ok(authorResponse);
     }
 
-    @GetMapping("/authors/delete/{id:\\d+}")
-    public String deleteAuthorById(@PathVariable Long id) {
-        try {
-            authorService.deleteAuthorById(id);
-        } catch (Exception e) {
-            return "redirect:/error?message=Unable to delete author with ID: " + id;
-        }
-        return "redirect:/authors";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAuthorById(@PathVariable(name = "id") Long id) {
+        authorService.deleteAuthorById(id);
+        return ResponseEntity.ok("Author deleted successfully");
     }
 
-    @PostMapping("/authors/update")
-    public String updateAuthor(
-            @RequestParam Long id,
-            @Valid @ModelAttribute("authorRequest") AuthorRequest authorRequest,
-            BindingResult result,
-            Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("authorRequest", authorRequest);
-            model.addAttribute("authorId", id);
-            return "author/edit-author";
-        }
-        try {
-            authorService.updateAuthor(id, authorRequest);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to update author with ID: " + id);
-            return "error";
-        }
-        return "redirect:/authors";
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateAuthor(@PathVariable(name = "id") Long id,
+                                               @Valid @RequestBody AuthorRequest authorRequest) {
+        authorService.updateAuthor(id, authorRequest);
+        return ResponseEntity.ok("Author updated successfully");
     }
 }
-

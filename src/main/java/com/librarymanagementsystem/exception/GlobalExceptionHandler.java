@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             ResourceNotFoundException.class,
             ResourceAlreadyExistsException.class,
-            InsufficientCountException.class
+            InsufficientCountException.class,
+            IllegalStateException.class
     })
 
     public ResponseEntity<ErrorResponse> handleCustomExceptions(Exception ex) {

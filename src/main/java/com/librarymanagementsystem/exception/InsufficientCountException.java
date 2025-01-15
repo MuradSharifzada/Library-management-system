@@ -6,8 +6,8 @@ import lombok.Getter;
 public class InsufficientCountException extends RuntimeException {
     private final String message;
 
-    public InsufficientCountException(String message, String message1) {
+    public InsufficientCountException(String message) {
         super(message);
-        this.message = message1;
+        this.message = message;
     }
 }

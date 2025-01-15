@@ -10,6 +10,9 @@ import com.librarymanagementsystem.repository.CategoryRepository;
 import com.librarymanagementsystem.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,18 +26,18 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    //Todo ● Show category books
 
     @Override
-    public List<CategoryResponse> getAllCategory() {
+    public List<CategoryResponse> getAllCategory(int pageNumber, int pageSize) {
         log.info("Attempting to retrieve all categories");
 
-        List<Category> categories = categoryRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Category> categories = categoryRepository.findAll(pageable);
         if (categories.isEmpty()) {
             log.warn("No categories found in the database");
             throw new ResourceNotFoundException("No categories found");
         } else {
-            log.info("Successfully retrieved {} categories", categories.size());
+            log.info("Successfully retrieved {} categories", categories.getSize());
         }
 
         return categories.stream()
@@ -63,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category existingCategory = categoryRepository.findById(id).orElseThrow(() -> {
             log.error("Category update failed - category with ID: {} not found", id);
-            throw  new ResourceNotFoundException("Category not found with ID: " + id);
+            throw new ResourceNotFoundException("Category not found with ID: " + id);
         });
 
         Category updatedCategory = categoryMapper.requestToEntity(request);
@@ -80,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findById(id).orElseThrow(() -> {
             log.error("Category retrieval failed - category with ID: {} not found", id);
-            throw  new ResourceNotFoundException("Category not found with ID: " + id);
+            throw new ResourceNotFoundException("Category not found with ID: " + id);
         });
 
         log.info("Successfully retrieved category with ID: {}", id);

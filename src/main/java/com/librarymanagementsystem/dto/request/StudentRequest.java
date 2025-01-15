@@ -28,6 +28,7 @@ public class StudentRequest {
 
     @NotNull(message = "Email address must not be null.")
     @Email(message = "Email must be a valid Gmail address.")
+    @UniqueTitle(entity = StudentService.class, message = "Student Email must be unique")
     String email;
 
     @NotBlank(message = "Phone number must not be blank.")

@@ -28,14 +28,17 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+    public ResponseEntity<List<CategoryResponse>> getAllCategories(
+            @RequestParam(name = "Page Number", defaultValue = "0") int pageNumber,
+            @RequestParam(name = "Page Size", defaultValue = "10") int pageSize
+    ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(categoryService.getAllCategory());
+                .body(categoryService.getAllCategory(pageNumber,pageSize));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable(name = "id") Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(categoryService.getCategoryById(id));
@@ -43,7 +46,7 @@ public class CategoryController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCategory(@PathVariable(name = "id") Long id) {
         categoryService.deleteCategoryById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)

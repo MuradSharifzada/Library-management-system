@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController()
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/student")
-
 public class StudentController {
 
     private final StudentService studentService;
@@ -31,8 +30,8 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<StudentResponse>> getAllStudents(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "0",name = "page Number") int page,
+            @RequestParam(defaultValue = "10",name = "Page Size") int size){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -40,7 +39,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStudentById(@PathVariable Long id) {
+    public ResponseEntity<String> deleteStudentById(@PathVariable(name = "id") Long id) {
 
         studentService.deleteStudentById(id);
 
@@ -52,7 +51,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id) {
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable(name = "id") Long id) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -60,7 +59,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateStudentById(@PathVariable Long id, @Valid @RequestBody StudentRequest request) {
+    public ResponseEntity<String> updateStudentById(@PathVariable(name = "id") Long id, @Valid @RequestBody StudentRequest request) {
 
         studentService.updateStudent(id, request);
         return ResponseEntity

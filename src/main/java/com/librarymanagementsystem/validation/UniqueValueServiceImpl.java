@@ -19,10 +19,15 @@ public class UniqueValueServiceImpl implements UniqueValueService {
     @Override
     public boolean isValueUnique(String value, Class<?> entityType) {
         return switch (entityType.getSimpleName()) {
-            case "StudentService" -> !studentRepository.existsByFIN(value);
+            case "StudentService" -> isStudentValueUnique(value);
             case "BookService" -> !bookRepository.existsByName(value);
             case "CategoryService" -> !categoryRepository.existsByName(value);
             default -> true;
         };
     }
+
+    private boolean isStudentValueUnique(String value) {
+        return !studentRepository.existsByFIN(value) && !studentRepository.existsByEmail(value);
+    }
+
 }
