@@ -33,11 +33,13 @@ public class BookRequest {
     @Positive(message = "Category ID must be a positive number.")
     Long categoryId;
 
-    MultipartFile bookImage;
+    String bookImage;
 
     @Min(value = 0, message = "Stock count must not be negative.")
     int stockCount;
 
-    @NotEmpty(message = "Authors list must not be empty.")
-    private List<@Valid AuthorRequest> authors;
+
+    @NotNull(message = "Authors ID list must not be null.")
+    @NotEmpty(message = "Authors ID list must not be empty.")
+    List<@Positive(message = "Author ID must be a positive number.") Long> authorId;
 }

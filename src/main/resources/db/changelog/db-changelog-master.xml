@@ -17,4 +17,5 @@
 
     <include file="v1.00/20250109-006-create-authors-books-relation.xml" relativeToChangelogFile="true"/>
 
+
 </databaseChangeLog>
