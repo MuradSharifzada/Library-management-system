@@ -16,5 +16,6 @@ public interface BookMapper {
     @Mapping(source = "categoryId", target = "category", qualifiedByName = "mapCategory")
     @Mapping(source = "authorId", target = "authors", qualifiedByName = "mapAuthors")
     @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "id",ignore = true)
     Book requestToEntity(BookRequest request);
 }

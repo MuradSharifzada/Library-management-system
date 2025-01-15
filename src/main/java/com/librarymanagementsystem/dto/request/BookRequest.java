@@ -1,13 +1,12 @@
 package com.librarymanagementsystem.dto.request;
 
-import jakarta.validation.Valid;
+import com.librarymanagementsystem.repository.BookRepository;
+import com.librarymanagementsystem.service.BookService;
+import com.librarymanagementsystem.validation.UniqueTitle;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +17,7 @@ public class BookRequest {
 
     @NotBlank(message = "Book name must not be blank.")
     @Size(max = 255, message = "Book name must not exceed 255 characters.")
+    @UniqueTitle(entity = BookService.class, message = "Book name must be unique.")
     String name;
 
     @NotBlank(message = "ISBN must not be blank.")

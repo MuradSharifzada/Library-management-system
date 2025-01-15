@@ -1,5 +1,7 @@
 package com.librarymanagementsystem.dto.request;
 
+import com.librarymanagementsystem.service.StudentService;
+import com.librarymanagementsystem.validation.UniqueTitle;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -13,6 +15,7 @@ public class StudentRequest {
 
     @NotBlank(message = "Student FIN must not be blank.")
     @Size(min = 7, message = "Student FIN must be at least 7 characters long.")
+    @UniqueTitle(entity = StudentService.class, message = "Student FIN  must be unique.")
     String FIN;
 
     @NotBlank(message = "First name must not be blank.")

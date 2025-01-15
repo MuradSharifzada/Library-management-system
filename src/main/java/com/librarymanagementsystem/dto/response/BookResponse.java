@@ -24,10 +24,10 @@ public class BookResponse {
     LocalDate publishedTime;
 
 
-    String category;
+    Long categoryId;
 
 
-    List<String> authorsName;
+    List<Long> authorId;
 
 
     String bookImage;

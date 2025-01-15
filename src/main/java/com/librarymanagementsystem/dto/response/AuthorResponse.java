@@ -22,7 +22,7 @@ public class AuthorResponse {
 
     String biography;
 
-    Set<Book> books;
+    Set<BookResponse> books;
 
 
 }

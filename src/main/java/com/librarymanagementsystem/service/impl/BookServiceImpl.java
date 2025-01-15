@@ -10,6 +10,7 @@ import com.librarymanagementsystem.repository.BookRepository;
 import com.librarymanagementsystem.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,9 +47,17 @@ public class BookServiceImpl implements BookService {
 
         Pageable pageable = PageRequest.of(pageNumber, size);
 
+        Page<Book> books = bookRepository.findAll(pageable);
+
+        if (books.isEmpty()) {
+            String errorMessage = "No books available to retrieve. The library is empty.";
+            log.error("Error occurred while retrieving books: {}", errorMessage);
+            throw new ResourceNotFoundException(errorMessage);
+        }
+
+
         log.info("Successfully retrieved all books with page number: {}", pageNumber);
-        return bookRepository.findAll(pageable)
-                .stream()
+        return books.stream()
                 .map(bookMapper::entityToResponse)
                 .collect(Collectors.toList());
     }

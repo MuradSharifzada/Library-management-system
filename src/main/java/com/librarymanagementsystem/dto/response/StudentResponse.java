@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StudentResponse {
 
+    Long id;
+
     String FIN;
 
     String firstName;

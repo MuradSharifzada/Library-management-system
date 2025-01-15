@@ -107,4 +107,6 @@ public class AuthorServiceImpl implements AuthorService {
         log.info("Getting books by author id.ID: {} Book count: {}", id, author.getBooks().size());
         return new ArrayList<>(author.getBooks());
     }
+
+
 }

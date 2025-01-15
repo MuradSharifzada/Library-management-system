@@ -41,6 +41,7 @@ public class Student {
 
     LocalDate birthDate;
 
+    @Builder.Default
     LocalDateTime enrollmentDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "student")
