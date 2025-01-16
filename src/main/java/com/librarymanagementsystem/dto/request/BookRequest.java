@@ -33,7 +33,6 @@ public class BookRequest {
     @Positive(message = "Category ID must be a positive number.")
     Long categoryId;
 
-    String bookImage;
 
     @Min(value = 0, message = "Stock count must not be negative.")
     int stockCount;

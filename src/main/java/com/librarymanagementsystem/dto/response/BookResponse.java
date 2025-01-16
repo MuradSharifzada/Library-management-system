@@ -30,7 +30,6 @@ public class BookResponse {
     List<Long> authorId;
 
 
-    String bookImage;
 
 
 }

@@ -7,8 +7,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     boolean existsByFirstNameAndLastName(String firstName, String lastName);
 
-    boolean existsByFirstName(String firstName);
-    boolean existsByLastName(String lastName);
+
 
 
 }

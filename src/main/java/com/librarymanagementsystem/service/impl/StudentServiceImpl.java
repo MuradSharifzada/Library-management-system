@@ -87,12 +87,12 @@ public class StudentServiceImpl implements StudentService {
 
         log.info("Trying to delete student by id: {}", id);
 
-        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> {
+        Student student = studentRepository.findById(id).orElseThrow(() -> {
             log.error("Deleting failed: Student not found with id: {}", id);
             return new ResourceNotFoundException("Deleting failed: Student not found with id: " + id);
         });
 
-        studentRepository.deleteById(id);
+        studentRepository.deleteById(student.getId());
         log.info("Student deleted successfully");
 
     }
