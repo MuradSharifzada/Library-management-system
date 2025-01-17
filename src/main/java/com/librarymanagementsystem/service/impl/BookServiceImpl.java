@@ -8,13 +8,16 @@ import com.librarymanagementsystem.mapper.BookMapper;
 import com.librarymanagementsystem.model.entity.Book;
 import com.librarymanagementsystem.repository.BookRepository;
 import com.librarymanagementsystem.service.BookService;
+import com.librarymanagementsystem.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final StorageService storageService;
 
     @Override
     public void createBook(BookRequest request) {
@@ -54,7 +58,6 @@ public class BookServiceImpl implements BookService {
             log.error("Error occurred while retrieving books: {}", errorMessage);
             throw new ResourceNotFoundException(errorMessage);
         }
-
 
         log.info("Successfully retrieved all books with page number: {}", pageNumber);
         return books.stream()
@@ -131,4 +134,82 @@ public class BookServiceImpl implements BookService {
         log.info("Successfully retrieved {} books for category name: {}", books.size(), name);
         return books;
     }
+
+    @Override
+    public void uploadBookImage(Long id, MultipartFile file) throws IOException {
+        Book book = bookRepository.findById(id).orElseThrow(() -> {
+            log.info("Book Image not found with id: {}", id);
+            return new ResourceNotFoundException("Book Image not found with id: " + id);
+        });
+        if (!book.getBookImage().isEmpty()) {
+            throw new ResourceAlreadyExistsException("The book already has an image. Please remove it before then trying  again.");
+        }
+
+        if (file == null || file.isEmpty()) {
+            log.error("Failed to upload image file is empty or null for book ID: {}", id);
+            throw new IOException("Cannot upload empty or null file.");
+        }
+        try {
+            String fileName = storageService.uploadFile(file);
+            log.info("Uploaded file to S3 with name: {} for book ID: {}", fileName, id);
+
+            book.setBookImage(fileName);
+            bookRepository.save(book);
+            log.info("Successfully updated and saved book ID: {} with image: {}", id, fileName);
+
+        } catch (IOException | ResourceNotFoundException e) {
+            log.error("Error uploading book image for book ID: {}, message: {}", id, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error uploading book image for book ID: {}, message: {}", id, e.getMessage());
+            throw new IOException("Unexpected error uploading book image for book ID: " + id, e);
+        }
+    }
+
+    @Override
+    public byte[] downloadBookImage(Long id) throws IOException {
+
+        Book book = bookRepository.findById(id).orElseThrow(() -> {
+            log.info("Book not found with id: {} for downloading", id);
+            throw new ResourceNotFoundException("Book not found with id: {} for downloading " + id);
+        });
+        try {
+            log.info("Looking for image name in bucket: {}", book.getBookImage());
+            byte[] image = storageService.downloadFile(book.getBookImage());
+            log.info("Book retrieved successfully");
+            return image;
+
+        } catch (IOException | ResourceNotFoundException e) {
+            log.error("Error happen downloading book image for book ID: {}, message: {}", id, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error downloading book image for book ID: {}, message: {}", id, e.getMessage());
+            throw new IOException("Unexpected error downloading book image for book ID: " + id, e);
+        }
+    }
+
+    @Override
+    public void deleteBookImage(Long id) throws IOException {
+
+        Book book = bookRepository.findById(id).orElseThrow(() -> {
+            log.info("Deleting failed Image not found with id: {}", id);
+            return new ResourceNotFoundException("Deleting failed Image not found with id: " + id);
+        });
+        try {
+            log.info("Deleting image from storage for book ID: {}", id);
+            storageService.deleteFile(book.getBookImage());
+
+            book.setBookImage(null);
+            bookRepository.save(book);
+
+        } catch (IOException | ResourceNotFoundException e) {
+            log.error("Error happen delete file for book ID: {}, message: {}", id, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error deleting book image for book ID: {}, message: {}", id, e.getMessage());
+            throw new IOException("Unexpected error deleting book image for book ID: " + id, e);
+        }
+    }
+
+
 }

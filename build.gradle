@@ -47,6 +47,10 @@ dependencies {
 
     implementation 'org.springframework.session:spring-session-jdbc:3.4.1'
 
+
+    implementation 'com.amazonaws:aws-java-sdk:1.11.931'
+
+
 }
 
 tasks.named('test') {
