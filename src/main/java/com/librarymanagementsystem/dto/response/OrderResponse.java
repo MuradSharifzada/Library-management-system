@@ -1,24 +1,31 @@
 package com.librarymanagementsystem.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Schema(description = "Represents the details of an order.")
 public class OrderResponse {
 
-     Long id;
+    @Schema(description = "The unique identifier of the order.", example = "1")
+    Long id;
 
-     StudentResponse student;
+    @Schema(description = "Details of the student associated with the order.")
+    StudentResponse student;
 
-     BookResponse book;
+    @Schema(description = "Details of the book associated with the order.")
+    BookResponse book;
 
-     LocalDateTime orderDate;
+    @Schema(description = "The date and time when the order was placed.", example = "2025-01-06T10:30:00")
+    LocalDateTime orderDate;
 
-     LocalDateTime returnDate;
+    @Schema(description = "The date and time by which the order must be returned.", example = "2025-01-06T10:30:00")
+    LocalDateTime returnDate;
 
-     String status;
 
 }

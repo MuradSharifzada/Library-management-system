@@ -12,7 +12,7 @@ public interface AuthorService {
 
     void createAuthor(AuthorRequest request);
 
-    List<AuthorResponse> getAllAuthors();
+    List<AuthorResponse> getAllAuthors(int pageNumber,int pageSize);
 
     AuthorResponse getAuthorById(Long id);
 

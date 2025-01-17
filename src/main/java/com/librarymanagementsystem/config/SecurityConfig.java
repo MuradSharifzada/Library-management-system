@@ -22,11 +22,17 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
+    private final String[] swaggerPath = new String[]{
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/authenticate").permitAll()
+                        .requestMatchers("/login", "/authenticate").permitAll()
+                        .requestMatchers(swaggerPath).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

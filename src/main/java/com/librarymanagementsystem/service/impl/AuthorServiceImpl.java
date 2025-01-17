@@ -11,6 +11,9 @@ import com.librarymanagementsystem.repository.AuthorRepository;
 import com.librarymanagementsystem.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,21 +34,22 @@ public class AuthorServiceImpl implements AuthorService {
         log.info("Attempting to create new Author with name: " + request.getFirstName());
         if (authorRepository.existsByFirstNameAndLastName(request.getFirstName(), request.getLastName())) {
             log.error("Author {} and {} already exists in Database", request.getFirstName(), request.getLastName());
-            throw new ResourceAlreadyExistsException("Author " + request.getFirstName() + " and " + request.getLastName() + " already exist");
+            throw new ResourceAlreadyExistsException("Author " + request.getFirstName() + " " + request.getLastName() + " already exist");
         }
         authorRepository.save(authorMapper.requestToEntity(request));
         log.info("Successfully created new Author with: " + request.getFirstName() + " " + request.getLastName());
     }
 
     @Override
-    public List<AuthorResponse> getAllAuthors() {
+    public List<AuthorResponse> getAllAuthors(int pageNumber, int pageSize) {
         log.info("Attempting to retrieve all authors");
-        List<Author> authors = authorRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Author> authors = authorRepository.findAll(pageable);
         if (authors.isEmpty()) {
             log.warn("No authors found in the database");
             throw new ResourceNotFoundException("No authors found");
         } else {
-            log.info("Successfully retrieved {} authors", authors.size());
+            log.info("Successfully retrieved {} authors", authors.getSize());
         }
         return authorRepository
                 .findAll()
@@ -60,7 +64,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         Author author = authorRepository.findById(id).orElseThrow(() -> {
             log.error("Author retrieval failed - author with ID: {} not found", id);
-            throw  new  ResourceNotFoundException("Author not found with ID: " + id);
+            throw new ResourceNotFoundException("Author not found with ID: " + id);
         });
 
         log.info("Successfully retrieved author with ID: {}", id);
@@ -74,7 +78,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         Author author = authorRepository.findById(id).orElseThrow(() -> {
             log.error("Author with ID: {} not found for updating", id);
-            throw  new ResourceNotFoundException("Author not found with ID: " + id);
+            throw new ResourceNotFoundException("Author not found with ID: " + id);
         });
 
         Author newAuthor = authorMapper.requestToEntity(request);
@@ -89,7 +93,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         Author author = authorRepository.findById(id).orElseThrow(() -> {
             log.error("Author with ID: {} not found for deleting", id);
-            throw  new ResourceNotFoundException("Author not found with ID: " + id);
+            throw new ResourceNotFoundException("Author not found with ID: " + id);
         });
         authorRepository.deleteById(id);
         log.info("Author deleted with {}", id);

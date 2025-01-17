@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.exception;
 
+import com.librarymanagementsystem.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;

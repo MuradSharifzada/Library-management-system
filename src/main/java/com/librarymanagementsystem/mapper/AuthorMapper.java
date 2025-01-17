@@ -6,8 +6,9 @@ import com.librarymanagementsystem.model.entity.Author;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AuthorMapper {
 
     AuthorResponse entityToResponse(Author author);
