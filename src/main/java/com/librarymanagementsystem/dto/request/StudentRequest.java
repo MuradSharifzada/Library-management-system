@@ -18,7 +18,7 @@ public class StudentRequest {
     @NotBlank(message = "Student FIN must not be blank.")
     @Size(min = 7, message = "Student FIN must be at least 7 characters long.")
     @UniqueTitle(entity = StudentService.class, message = "Student FIN must be unique.")
-    @Schema(description = "The unique FIN of the student.", example = "FIN12345")
+    @Schema(description = "FIN", example = "FIN1234")
     String FIN;
 
     @NotBlank(message = "First name must not be blank.")
