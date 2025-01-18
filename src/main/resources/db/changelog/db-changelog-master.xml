@@ -10,12 +10,15 @@
 
     <include file="v1.00/20250109-002-create-books-table.xml" relativeToChangelogFile="true"/>
 
-
     <include file="v1.00/20250109-004-create-students-table.xml" relativeToChangelogFile="true"/>
 
     <include file="v1.00/20250109-005-create-orders-table.xml" relativeToChangelogFile="true"/>
 
     <include file="v1.00/20250109-006-create-authors-books-relation.xml" relativeToChangelogFile="true"/>
+
+    <include file="v1.00/20250110-007-create-user-table.xml" relativeToChangelogFile="true"/>
+
+    <include file="db/changelog/v1.00/20250119-008-create-index-books-name.xml"/>
 
 
 </databaseChangeLog>
