@@ -35,8 +35,8 @@ public class BookController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Book Created Successfully",
                     content = @Content(schema = @Schema(implementation = BookRequest.class))),
-            @ApiResponse(responseCode = "404", description = "Invalid input data",
-                    content = @Content(schema = @Schema(implementation = BookRequest.class)))
+            @ApiResponse(responseCode = "400", description = "Invalid input data",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping
     public ResponseEntity<String> createBook(@io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -72,12 +72,10 @@ public class BookController {
     }
 
 
-
     @Operation(summary = "Get Book by ID", description = "Retrieves a specific book by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = BookResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Book not found")
+                    content = @Content(schema = @Schema(implementation = BookResponse.class)))
     })
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getBookById(@Parameter(description = "ID of the book to retrieve") @PathVariable Long id) {
@@ -86,11 +84,9 @@ public class BookController {
     }
 
 
-
     @Operation(summary = "Delete Book by ID", description = "Deletes a specific book by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Book deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Book not found")
+            @ApiResponse(responseCode = "200", description = "Book deleted successfully")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBookById(@Parameter(description = "ID of the book to delete") @PathVariable Long id) {
@@ -102,8 +98,7 @@ public class BookController {
     @Operation(summary = "Update Book", description = "Updates the details of a specific book by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "Book not found")
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PutMapping("/{id}")
     public ResponseEntity<String> updateBook(@Parameter(description = "ID of the book to update") @PathVariable Long id,
@@ -173,8 +168,7 @@ public class BookController {
 
     @Operation(summary = "Download a Book Image", description = "Downloads the image of a specific book by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Image downloaded successfully"),
-            @ApiResponse(responseCode = "404", description = "Image not found")
+            @ApiResponse(responseCode = "200", description = "Image downloaded successfully")
     })
     @GetMapping(value = "/{id}/image")
     public ResponseEntity<byte[]> downloadBookImage(@Parameter(description = "Book ID of the image to download") @PathVariable Long id) throws IOException {
@@ -189,8 +183,7 @@ public class BookController {
 
     @Operation(summary = "Delete a Book Image", description = "Deletes the image of a specific book by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Image deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Image not found")
+            @ApiResponse(responseCode = "200", description = "Image deleted successfully")
     })
     @DeleteMapping("/{id}/image")
     public ResponseEntity<String> deleteBookImage(@Parameter(description = "Book ID of the image to delete") @PathVariable(name = "id") Long id) throws IOException {

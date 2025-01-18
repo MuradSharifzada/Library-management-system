@@ -3,6 +3,7 @@ package com.librarymanagementsystem.service;
 
 import com.librarymanagementsystem.dto.request.AuthorRequest;
 import com.librarymanagementsystem.dto.response.AuthorResponse;
+import com.librarymanagementsystem.dto.response.BookResponse;
 import com.librarymanagementsystem.model.entity.Author;
 import com.librarymanagementsystem.model.entity.Book;
 
@@ -20,7 +21,7 @@ public interface AuthorService {
 
     void deleteAuthorById(Long id);
 
-    List<Book> getBooksByAuthorId(Long authorId);
+    List<BookResponse> getBooksByAuthorId(Long authorId);
 
 
 }

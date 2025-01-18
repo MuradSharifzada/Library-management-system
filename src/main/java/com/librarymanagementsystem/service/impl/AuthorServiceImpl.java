@@ -2,9 +2,11 @@ package com.librarymanagementsystem.service.impl;
 
 import com.librarymanagementsystem.dto.request.AuthorRequest;
 import com.librarymanagementsystem.dto.response.AuthorResponse;
+import com.librarymanagementsystem.dto.response.BookResponse;
 import com.librarymanagementsystem.exception.ResourceAlreadyExistsException;
 import com.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.librarymanagementsystem.mapper.AuthorMapper;
+import com.librarymanagementsystem.mapper.BookMapper;
 import com.librarymanagementsystem.model.entity.Author;
 import com.librarymanagementsystem.model.entity.Book;
 import com.librarymanagementsystem.repository.AuthorRepository;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
+    private final BookMapper bookMapper;
 
 
     @Override
@@ -93,14 +95,14 @@ public class AuthorServiceImpl implements AuthorService {
 
         Author author = authorRepository.findById(id).orElseThrow(() -> {
             log.error("Author with ID: {} not found for deleting", id);
-            throw new ResourceNotFoundException("Author not found with ID: " + id);
+            return new ResourceNotFoundException("Author not found with ID: " + id);
         });
         authorRepository.deleteById(id);
         log.info("Author deleted with {}", id);
     }
 
     @Override
-    public List<Book> getBooksByAuthorId(Long id) {
+    public List<BookResponse> getBooksByAuthorId(Long id) {
 
         log.info("Attempting to retrieve author books  with ID: {}", id);
 
@@ -108,8 +110,16 @@ public class AuthorServiceImpl implements AuthorService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
 
+        if (author.getBooks().isEmpty()) {
+            throw new ResourceNotFoundException("No books find by author id: " + id);
+        }
+
+
         log.info("Getting books by author id.ID: {} Book count: {}", id, author.getBooks().size());
-        return new ArrayList<>(author.getBooks());
+
+        return authorRepository
+                .findBooksByAuthorId(id).stream().map(bookMapper::entityToResponse)
+                .collect(Collectors.toList());
     }
 
 

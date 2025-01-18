@@ -68,8 +68,7 @@ public class CategoryController {
 
     @Operation(summary = "Get a category by ID", description = "Retrieves the details  category by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = "200", description = "Category retrieved successfully")
     })
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(
@@ -81,8 +80,7 @@ public class CategoryController {
 
     @Operation(summary = "Delete a category by ID", description = "Deletes category by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = "200", description = "Category deleted successfully")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(

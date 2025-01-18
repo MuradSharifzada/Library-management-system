@@ -66,8 +66,8 @@ public class StudentController {
 
     @Operation(summary = "Delete a student by ID", description = "Deletes a student from the system using their ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Student deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Student not found")
+            @ApiResponse(responseCode = "200", description = "Student deleted successfully")
+
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudentById(
@@ -80,8 +80,7 @@ public class StudentController {
 
     @Operation(summary = "Get a student by ID", description = "Retrieves the details of a specific student by their ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Student details retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Student not found")
+            @ApiResponse(responseCode = "200", description = "Student details retrieved successfully")
     })
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponse> getStudentById(
@@ -94,8 +93,7 @@ public class StudentController {
     @Operation(summary = "Update a student by ID", description = "Updates the details of a specific student by their ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Student updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "Student not found")
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PutMapping("/{id}")
     public ResponseEntity<String> updateStudentById(

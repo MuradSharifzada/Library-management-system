@@ -24,7 +24,7 @@ public class ErrorResponse {
     @Schema(description = "The detailed error message describing the issue.", example = "Invalid request parameters")
     String errorMessage;
 
-    @Schema(description = "The specific error code for identifying the type of error.", example = "4001")
+    @Schema(description = "The specific error code for identifying the type of error.",example = "404")
     int errorCode;
 
 }
