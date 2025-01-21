@@ -27,7 +27,7 @@ public class UniqueValueServiceImpl implements UniqueValueService {
     }
 
     private boolean isStudentValueUnique(String value) {
-        return !studentRepository.existsByFIN(value) && !studentRepository.existsByEmail(value);
+        return !studentRepository.existsByFin(value) && !studentRepository.existsByEmail(value);
     }
 
 }

@@ -23,7 +23,7 @@ public class CustomKeyGenerator implements KeyGenerator {
         // Add parameters
         for (Object param : params) {
             if (param != null) {
-                key.append(param.toString()).append(",");
+                key.append(param).append(",");
             }
         }
 
