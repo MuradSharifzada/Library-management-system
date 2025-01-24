@@ -81,8 +81,8 @@ public class AuthorController {
     @Operation(summary = "Delete Author by ID", description = "Deletes an author by their ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Author deleted successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = String.class))),
+                    content = @Content(
+                            schema = @Schema(implementation = AuthorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)))
@@ -98,13 +98,13 @@ public class AuthorController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Author updated successfully",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = String.class))),
+                            schema = @Schema(implementation = AuthorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateAuthor(
+    public ResponseEntity<AuthorRequest> updateAuthor(
             @Parameter(description = "ID of the author to update") @PathVariable Long id,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Updated details of the author",
@@ -114,7 +114,7 @@ public class AuthorController {
                             examples = @ExampleObject(value = "{ \"firstName\": \"James\", \"lastName\": \"Smith\", \"birthDay\": \"1990-05-15\", \"biography\": \"Updated biography\" }")))
             @Valid @RequestBody AuthorRequest authorRequest) {
         authorService.updateAuthor(id, authorRequest);
-        return ResponseEntity.ok("Author updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(authorRequest);
     }
 
     @Operation(summary = "Find Books by Author ID", description = "Retrieves a list of books written by a specific author.")

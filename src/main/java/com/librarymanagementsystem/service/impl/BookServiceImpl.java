@@ -141,9 +141,9 @@ public class BookServiceImpl implements BookService {
             log.info("Book Image not found with id: {}", id);
             return new ResourceNotFoundException("Book Image not found with id: " + id);
         });
-        if (!book.getBookImage().isEmpty()) {
-            throw new ResourceAlreadyExistsException("The book already has an image. Please remove it before then trying  again.");
-        }
+//        if (!book.getBookImage().isEmpty()) {
+//            throw new ResourceAlreadyExistsException("The book already has an image. Please remove it before then trying  again.");
+//        }
 
         if (file == null || file.isEmpty()) {
             log.error("Failed to upload image file is empty or null for book ID: {}", id);
@@ -173,6 +173,9 @@ public class BookServiceImpl implements BookService {
             log.info("Book not found with id: {} for downloading", id);
             throw new ResourceNotFoundException("Book not found with id: {} for downloading " + id);
         });
+        if (book.getBookImage() == null || book.getBookImage().isEmpty()) {
+            throw new ResourceNotFoundException("Image not found for book ID: " + book.getId());
+        }
         try {
             log.info("Looking for image name in bucket: {}", book.getBookImage());
             byte[] image = storageService.downloadFile(book.getBookImage());

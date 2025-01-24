@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,12 +20,13 @@ public class ErrorResponse {
     HttpStatus status;
 
     @Schema(description = "The date and time when the error occurred.", example = "2025-01-06T15:30:45")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime date;
 
     @Schema(description = "The detailed error message describing the issue.", example = "Invalid request parameters")
     String errorMessage;
 
-    @Schema(description = "The specific error code for identifying the type of error.",example = "404")
+    @Schema(description = "The specific error code for identifying the type of error.", example = "404")
     int errorCode;
 
 }

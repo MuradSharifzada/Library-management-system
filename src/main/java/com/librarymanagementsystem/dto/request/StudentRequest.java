@@ -1,25 +1,28 @@
 package com.librarymanagementsystem.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.librarymanagementsystem.service.StudentService;
 import com.librarymanagementsystem.validation.UniqueTitle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of a student.")
 public class StudentRequest {
 
-    @NotBlank(message = "Student FIN must not be blank.")
     @Size(min = 7, message = "Student FIN must be at least 7 characters long.")
     @UniqueTitle(entity = StudentService.class, message = "Student FIN must be unique.")
-    @Schema(description = "FIN", example = "FIN1234")
-    String FIN;
+    @Schema(description = "fin", example = "FIN1234")
+    String fin;
 
     @NotBlank(message = "First name must not be blank.")
     @Size(max = 50, message = "First name must not exceed 50 characters.")
@@ -48,5 +51,6 @@ public class StudentRequest {
     @NotNull(message = "Birth date must not be null.")
     @Past(message = "Birth date must be a past date.")
     @Schema(description = "The birth date of the student. Must be a past date.", example = "2005-01-01")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate birthDate;
 }

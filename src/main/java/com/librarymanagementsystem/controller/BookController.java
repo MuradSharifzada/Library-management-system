@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,8 @@ public class BookController {
                     schema = @Schema(implementation = BookRequest.class),
                     examples = @ExampleObject(
                             value = "{\"name\": \"Atomic Habits\", \"isbn\": \"9783442178582\", " +
-                                    "\"description\": \"Transformative guide to building better habits through small, consistent changes.\", " +
+                                    "\"description\": \"Transformative guide to building better habits through small, consistent changes.\"," +
+                                    "\"bookImage\": \"atomic-habits.jpeg \" ," +
                                     "\"publishedTime\": \"2016-11-16\", \"categoryId\": 1, \"stockCount\": 100, \"authorId\": [1]}")))
                                              @RequestBody @Valid BookRequest bookRequest
     ) {
@@ -165,18 +165,25 @@ public class BookController {
         return ResponseEntity.ok("Image uploaded successfully for book ID: " + id);
     }
 
-
-    @Operation(summary = "Download a Book Image", description = "Downloads the image of a specific book by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Image downloaded successfully")
-    })
-    @GetMapping(value = "/{id}/image")
-    public ResponseEntity<byte[]> downloadBookImage(@Parameter(description = "Book ID of the image to download") @PathVariable Long id) throws IOException {
+    @Operation(
+            summary = "Download a Book Image",
+            description = "Downloads or displays the image of a specific book by its ID.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Image retrieved successfully",
+                            content = @Content(
+                                    mediaType = MediaType.IMAGE_JPEG_VALUE,
+                                    schema = @Schema(type = "string", format = "binary")
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> downloadBookImage(@PathVariable Long id) throws IOException {
         byte[] imageData = bookService.downloadBookImage(id);
-
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"book-image\"")
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(imageData);
     }
 

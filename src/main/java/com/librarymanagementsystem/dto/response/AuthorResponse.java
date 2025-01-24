@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class AuthorResponse {
     String lastName;
 
     @Schema(description = "The birth date of the author.", example = "1986-01-22")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate birthDay;
 
     @Schema(description = "Biography of the author.", example = "James Clear is the author of Atomic Habits, a bestseller on building good habits.")

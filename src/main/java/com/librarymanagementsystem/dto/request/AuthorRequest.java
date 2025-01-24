@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -27,6 +28,7 @@ public class AuthorRequest {
 
     @Past(message = "Birth date must not be in the future.")
     @Schema(description = "The birth date of the author.", example = "1986-01-22")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate birthDay;
 
     @Size(max = 200, message = "Invalid biography: Length must not exceed 200 characters.")

@@ -29,9 +29,9 @@ public class StudentServiceImpl implements StudentService {
     public void createStudents(StudentRequest request) {
         log.info("Trying to create a new student with name: {}", request.getFirstName());
 
-        if (studentRepository.existsByFIN(request.getFIN())) {
-            log.error("Student creation failed - FIN {} already exists", request.getFIN());
-            throw new ResourceAlreadyExistsException("FIN " + request.getFIN() + " Already exist");
+        if (studentRepository.existsByFin(request.getFin())) {
+            log.error("Student creation failed - FIN {} already exists", request.getFin());
+            throw new ResourceAlreadyExistsException("FIN " + request.getFin() + " Already exist");
         }
         studentRepository.save(studentMapper.requestToEntity(request));
 

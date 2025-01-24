@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: lms-postgres
+    environment:
+      POSTGRES_USER: lms_user
+      POSTGRES_PASSWORD: lms_password
+      POSTGRES_DB: lms_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lms-network
+
+  redis:
+    image: redis:6-alpine
+    container_name: lms-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - lms-network
+
+  lms-backend:
+    image: azul/zulu-openjdk:17.0.13
+    container_name: lms-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/lms_database
+      - SPRING_DATASOURCE_USERNAME=lms_user
+      - SPRING_DATASOURCE_PASSWORD=lms_password
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./build/libs/LibraryManagementSystem-0.0.1-SNAPSHOT.jar:/app/LibraryManagementSystem-0.0.1-SNAPSHOT.jar
+    command: ["java", "-jar", "/app/LibraryManagementSystem-0.0.1-SNAPSHOT.jar"]
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - lms-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  lms-network:
+    driver: bridge

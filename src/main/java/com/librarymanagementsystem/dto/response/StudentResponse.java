@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class StudentResponse {
     Long id;
 
     @Schema(description = "The unique (FIN) of the student.", example = "FIN98765")
-    String FIN;
+    String fin;
 
     @Schema(description = "The first name of the student.", example = "Murad")
     String firstName;
@@ -31,8 +32,10 @@ public class StudentResponse {
     String studentGroup;
 
     @Schema(description = "The birth date of the student.", example = "2005-01-01")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate birthDate;
 
     @Schema(description = "The enrollment date of the student in the system.", example = "2025-01-06")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate enrollmentDate;
 }

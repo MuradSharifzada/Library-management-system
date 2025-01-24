@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +23,7 @@ public class Student {
     Long id;
 
     @Column(unique = true, nullable = false, updatable = false)
-    String FIN;
+    String fin;
 
     @Column(nullable = false, unique = true)
     String email;
@@ -39,7 +40,9 @@ public class Student {
     @Column(length = 15, nullable = false)
     String studentGroup;
 
+
     LocalDate birthDate;
+
 
     @Builder.Default
     LocalDateTime enrollmentDate = LocalDateTime.now();

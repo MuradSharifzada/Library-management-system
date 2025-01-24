@@ -1,0 +1,3 @@
+2025-01-23T16:22:35.233+04:00  INFO 10136 --- [Library Management System] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-01-23T16:22:35.244+04:00  INFO 10136 --- [Library Management System] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-01-23T16:22:35.249+04:00  INFO 10136 --- [Library Management System] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

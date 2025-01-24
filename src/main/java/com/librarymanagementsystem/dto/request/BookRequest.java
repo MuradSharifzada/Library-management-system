@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.librarymanagementsystem.service.BookService;
 import com.librarymanagementsystem.validation.UniqueTitle;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +33,7 @@ public class BookRequest {
 
     @PastOrPresent(message = "Published date must be in the past or today.")
     @Schema(description = "The date when the book was published.", example = "2018-10-16")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate publishedTime;
 
     @NotNull(message = "Category ID must not be null.")
@@ -42,6 +44,9 @@ public class BookRequest {
     @Min(value = 0, message = "Stock count must not be negative.")
     @Schema(description = "The number of copies available in stock.", example = "50")
     int stockCount;
+
+    @Schema(description = "The name of the image file stored in the cloud.", example = "atomic_habits.jpg")
+    String bookImage;
 
     @NotNull(message = "Authors ID list must not be null.")
     @NotEmpty(message = "Authors ID list must not be empty.")

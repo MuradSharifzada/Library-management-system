@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
         error.setErrorCode(HttpStatus.BAD_REQUEST.value());
         error.setDate(LocalDateTime.now());
         error.setStatus(HttpStatus.BAD_REQUEST);
-        log.error("Validation failed for argument: " + errorMessage);
+        log.error("Validation failed for argument: {}", errorMessage);
         return error;
     }
 
@@ -67,4 +68,20 @@ public class GlobalExceptionHandler {
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
+        log.error("IO exception occurred: {}", ex.getMessage(), ex);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .date(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .errorMessage(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+
 }

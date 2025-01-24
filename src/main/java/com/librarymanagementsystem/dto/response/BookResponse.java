@@ -1,9 +1,11 @@
 package com.librarymanagementsystem.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +30,11 @@ public class BookResponse {
     @Schema(description = "The number of copies available in stock.", example = "50")
     int stockCount;
 
+    @Schema(description = "The name of the image file stored in the cloud.", example = "atomic_habits.jpg")
+    String bookImage;
+
     @Schema(description = "The date when the book was published.", example = "2018-10-16")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate publishedTime;
 
     @Schema(description = "The ID of the category to which the book belongs.", example = "2")

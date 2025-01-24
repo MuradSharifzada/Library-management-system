@@ -39,7 +39,7 @@ public class StudentController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StudentRequest.class),
                             examples = @ExampleObject(
-                                    value = "{\"FIN\": \"FIN67890\", \"firstName\": \"Murad\", \"lastName\": \"Sharifzada\", " +
+                                    value = "{\"fin\": \"FIN67890\", \"firstName\": \"Murad\", \"lastName\": \"Sharifzada\", " +
                                             "\"email\": \"muradsharifzada@gmail.com\", \"phoneNumber\": \"+994987654321\", " +
                                             "\"studentGroup\": \"232K eng \", \"birthDate\": \"2005-11-15\"}")))
             @RequestBody @Valid StudentRequest request) {
@@ -104,13 +104,24 @@ public class StudentController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = StudentRequest.class),
                             examples = @ExampleObject(
-                                    value = "{\"FIN\": \"FIN67890\", \"firstName\": \"Murad\", \"lastName\": \"Sharifzada\", " +
+                                    value = "{\"fin\": \"FIN67890\", \"firstName\": \"Murad\", \"lastName\": \"Sharifzada\", " +
                                             "\"email\": \"muradsharifzada@gmail.com\", \"phoneNumber\": \"+994987654321\", " +
-                                            "\"studentGroup\": \"232K eng \", \"birthDate\": \"2005-01-01\"}")))
+                                            "\"studentGroup\": \"232K eng \", \"birthDate\": \"2005-11-15\"}")))
+
             @Valid @RequestBody StudentRequest request) {
+
+        // Debugging logs
+        System.out.println("Received FIN: " + request.getFin());
+
+        if (request.getFin() == null || request.getFin().isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Validation Error: Student FIN must not be blank.");
+        }
+
         studentService.updateStudent(id, request);
-        return ResponseEntity
-                .status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body("Student Updated Successfully");
     }
+
+
 }

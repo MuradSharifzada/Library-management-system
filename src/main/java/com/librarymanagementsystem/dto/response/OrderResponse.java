@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -22,9 +23,11 @@ public class OrderResponse {
     BookResponse book;
 
     @Schema(description = "The date and time when the order was placed.", example = "2025-01-06T10:30:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDateTime orderDate;
 
     @Schema(description = "The date and time by which the order must be returned.", example = "2025-01-06T10:30:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDateTime returnDate;
 
 
