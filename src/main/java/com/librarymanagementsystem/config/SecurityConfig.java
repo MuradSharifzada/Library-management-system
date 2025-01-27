@@ -1,5 +1,6 @@
 package com.librarymanagementsystem.config;
 
+import com.librarymanagementsystem.model.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,26 +23,32 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private final String[] swaggerPath = new String[]{
-            "/swagger-ui/**",
-            "/swagger-ui.html"
-    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/authenticate").permitAll()
-                        .requestMatchers(swaggerPath).permitAll()
+                        .requestMatchers("/login", "/authenticate", "/books", "/books/{id}", "/books/{id}/image", "/home", "/").permitAll()
+                        .requestMatchers("/books/add", "/books/update/{id}", "/books/delete/{id}").hasRole("ADMIN")
                         .anyRequest().authenticated()
+                )
+
+                .sessionManagement(session -> session
+                        .sessionFixation().migrateSession()
+                        .maximumSessions(1)
+                        .expiredUrl("/login?expired=true")
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/authenticate")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/admin", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
+                        .logoutSuccessUrl("/books")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
@@ -49,16 +56,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+
         return configuration.getAuthenticationManager();
     }
 
