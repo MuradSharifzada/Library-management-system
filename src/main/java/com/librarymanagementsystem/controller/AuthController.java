@@ -24,18 +24,10 @@ public class AuthController {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
+
     @PostMapping("/authenticate")
     public String authenticate(@ModelAttribute @Valid LoginRequest request, HttpSession session, Model model) {
-        log.info("Received authentication request for email: {}", request.getEmail());
-        try {
-            authService.login(request, session);
-            return "redirect:/home";
-        } catch (Exception e) {
-            log.error("Authentication failed: {}", e.getMessage());
-            model.addAttribute("error", e.getMessage());
-            return "login";
-        }
+        authService.login(request, session);
+        return "redirect:/admin";
     }
-
-
 }

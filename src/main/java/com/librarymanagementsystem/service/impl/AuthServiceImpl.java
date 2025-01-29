@@ -47,24 +47,4 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Login successful for user: {}", user.getEmail());
     }
-
-
-    @Override
-    public void authenticate(String email, String password) {
-        log.info("Authenticating user with email: {}", email);
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.info("Authentication successful for user: {}", email);
-    }
 }
