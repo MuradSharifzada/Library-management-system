@@ -3,125 +3,77 @@ package com.librarymanagementsystem.controller;
 import com.librarymanagementsystem.dto.request.StudentRequest;
 import com.librarymanagementsystem.dto.response.StudentResponse;
 import com.librarymanagementsystem.service.StudentService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
+@RequestMapping("/students")
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/student")
 public class StudentController {
 
     private final StudentService studentService;
 
-    @Operation(summary = "Create a new student", description = "Adds a new student to the system.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Student created successfully",
-                    content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")
-    })
-    @PostMapping
-    public ResponseEntity<String> createStudent(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Details of the student to create",
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StudentRequest.class),
-                            examples = @ExampleObject(
-                                    value = "{\"fin\": \"FIN67890\", \"firstName\": \"Murad\", \"lastName\": \"Sharifzada\", " +
-                                            "\"email\": \"muradsharifzada@gmail.com\", \"phoneNumber\": \"+994987654321\", " +
-                                            "\"studentGroup\": \"232K eng \", \"birthDate\": \"2005-11-15\"}")))
-            @RequestBody @Valid StudentRequest request) {
-        studentService.createStudents(request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("New Student Created successfully");
-    }
 
-    @Operation(summary = "Get all students", description = "Retrirves a list of all students with pagination.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of students retrieved successfully")
-    })
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAllStudents(
-            @Parameter(description = "Page number for pagination, defaults to 0", example = "0")
-            @RequestParam(defaultValue = "0", name = "page Number") int page,
-            @Parameter(description = "Page size for pagination, defaults to 10", example = "10")
-            @RequestParam(defaultValue = "10", name = "Page Size") int size) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(studentService.getAllStudents(page, size));
+    public String showAllStudents(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  Model model) {
+        Page<StudentResponse> studentPage = studentService.getAllStudents(page, size);
+        model.addAttribute("students", studentPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", studentPage.getTotalPages());
+        model.addAttribute("pageSize", size);
+        return "student/students";
     }
 
-    @Operation(summary = "Delete a student by ID", description = "Deletes a student from the system using their ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Student deleted successfully")
 
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStudentById(
-            @Parameter(description = "ID of the student to delete") @PathVariable(name = "id") Long id) {
+    @GetMapping("/add")
+    public String createStudentForm(Model model) {
+        model.addAttribute("student", new StudentRequest());
+        return "student/add-student";
+    }
+
+
+    @PostMapping("/add")
+    public String createStudent(@Validated(StudentRequest.Create.class) @ModelAttribute StudentRequest studentRequest) {
+        studentService.createStudents(studentRequest);
+        return "redirect:/students";
+    }
+
+
+    @GetMapping("/details/{id}")
+    public String getStudentById(@PathVariable Long id, Model model) {
+        StudentResponse studentResponse = studentService.getStudentById(id);
+        model.addAttribute("student", studentResponse);
+        return "student/student-details";
+    }
+
+
+    @GetMapping("/update/{id}")
+    public String updateStudentForm(@PathVariable Long id, Model model) {
+        StudentResponse studentResponse = studentService.getStudentById(id);
+        model.addAttribute("student", studentResponse);
+        return "student/update-student";
+    }
+
+
+    @PostMapping("/update/{id}")
+    public String updateStudent(@PathVariable Long id,  @Validated(StudentRequest.Update.class) @ModelAttribute StudentRequest studentRequest) {
+        studentService.updateStudent(id, studentRequest);
+        return "redirect:/students";
+    }
+
+
+    @PostMapping("/delete/{id}")
+    public String deleteStudent(@PathVariable Long id) {
         studentService.deleteStudentById(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body("Student deleted successfully");
+        return "redirect:/students";
     }
-
-    @Operation(summary = "Get a student by ID", description = "Retrieves the details of a specific student by their ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Student details retrieved successfully")
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<StudentResponse> getStudentById(
-            @Parameter(description = "ID of the student to retrieve") @PathVariable(name = "id") Long id) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(studentService.getStudentById(id));
-    }
-
-    @Operation(summary = "Update a student by ID", description = "Updates the details of a specific student by their ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Student updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateStudentById(
-            @Parameter(description = "ID of the student to update") @PathVariable(name = "id") Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Updated details of the student",
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StudentRequest.class),
-                            examples = @ExampleObject(
-                                    value = "{\"fin\": \"FIN67890\", \"firstName\": \"Murad\", \"lastName\": \"Sharifzada\", " +
-                                            "\"email\": \"muradsharifzada@gmail.com\", \"phoneNumber\": \"+994987654321\", " +
-                                            "\"studentGroup\": \"232K eng \", \"birthDate\": \"2005-11-15\"}")))
-
-            @Valid @RequestBody StudentRequest request) {
-
-        // Debugging logs
-        System.out.println("Received FIN: " + request.getFin());
-
-        if (request.getFin() == null || request.getFin().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Validation Error: Student FIN must not be blank.");
-        }
-
-        studentService.updateStudent(id, request);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("Student Updated Successfully");
-    }
-
-
 }
