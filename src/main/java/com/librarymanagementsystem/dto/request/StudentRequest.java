@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
-
 @Data
 @Getter
 @Setter
@@ -17,10 +17,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of a student.")
+@Validated
 public class StudentRequest {
 
     @Size(min = 7, message = "Student FIN must be at least 7 characters long.")
-    @UniqueTitle(entity = StudentService.class, message = "Student FIN must be unique.")
+    @UniqueTitle(entity = StudentService.class, message = "Student FIN must be unique.", groups = Create.class)
     @Schema(description = "fin", example = "FIN1234")
     String fin;
 
@@ -36,7 +37,7 @@ public class StudentRequest {
 
     @NotNull(message = "Email address must not be null.")
     @Email(message = "Email must be a valid Gmail address.")
-    @UniqueTitle(entity = StudentService.class, message = "Student Email must be unique.")
+    @UniqueTitle(entity = StudentService.class, message = "Student Email must be unique.", groups = Create.class)
     @Schema(description = "The email address of the student. Must be unique and in Gmail format.", example = "muradsharifzada@gmail.com")
     String email;
 
@@ -53,4 +54,7 @@ public class StudentRequest {
     @Schema(description = "The birth date of the student. Must be a past date.", example = "2005-01-01")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate birthDate;
+
+    public interface Create {}
+    public interface Update {}
 }

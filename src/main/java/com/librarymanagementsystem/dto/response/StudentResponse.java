@@ -38,4 +38,6 @@ public class StudentResponse {
     @Schema(description = "The enrollment date of the student in the system.", example = "2025-01-06")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate enrollmentDate;
+
+    String phoneNumber;
 }
