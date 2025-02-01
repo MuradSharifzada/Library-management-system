@@ -13,10 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,21 +26,19 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public List<CategoryResponse> getAllCategory(int pageNumber, int pageSize) {
+    public Page<CategoryResponse> getAllCategory(int pageNumber, int pageSize) {
         log.info("Attempting to retrieve all categories");
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Category> categories = categoryRepository.findAll(pageable);
         if (categories.isEmpty()) {
             log.warn("No categories found in the database");
             throw new ResourceNotFoundException("No categories found");
         } else {
-            log.info("Successfully retrieved {} categories", categories.getSize());
+            log.info("Successfully retrieved  categories");
         }
 
-        return categories.stream()
-                .map(categoryMapper::entityToResponse)
-                .collect(Collectors.toList());
+        return categories.map(categoryMapper::entityToResponse);
     }
 
     @Override
@@ -103,5 +99,10 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Successfully deleted category with ID: {}", id);
         categoryRepository.deleteById(id);
 
+    }
+
+    @Override
+    public Long countCategories() {
+        return categoryRepository.count();
     }
 }
