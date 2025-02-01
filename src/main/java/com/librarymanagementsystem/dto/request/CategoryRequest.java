@@ -20,7 +20,7 @@ public class CategoryRequest {
 
     @NotBlank(message = "Category name must not be blank.")
     @Size(max = 50, message = "Category name must not exceed 50 characters.")
-    @UniqueTitle(entity = CategoryService.class, message = "Category name must be unique.")
+    @UniqueTitle(entity = CategoryService.class, message = "Category name must be unique.",groups = Create.class)
     @Schema(description = "Name of the category", example = "Self-Help")
     String name;
 
@@ -32,4 +32,7 @@ public class CategoryRequest {
     @Size(max = 30, message = "Category type must not exceed 30 characters.")
     @Schema(description = "Type of the category", example = "Non-Fiction")
     String type;
+
+    public interface Create{}
+    public interface Update{}
 }
