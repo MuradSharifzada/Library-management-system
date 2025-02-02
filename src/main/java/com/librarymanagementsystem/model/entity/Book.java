@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,8 +40,9 @@ public class Book {
     @Column(name = "published_time")
     LocalDate publishedTime;
 
-    @ManyToMany(mappedBy = "books",cascade = CascadeType.REMOVE)
-    List<Author> authors;
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "books",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    List<Author> authors=new ArrayList<>();
 
     @ManyToOne()
     @JoinColumn(name = "category_id", referencedColumnName = "id")

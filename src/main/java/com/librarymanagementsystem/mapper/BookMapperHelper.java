@@ -11,11 +11,16 @@ import java.util.stream.Collectors;
 @Component
 public class BookMapperHelper {
 
-    @Named("mapAuthorsToIds")
-    public List<Long> mapAuthorsToIds(List<Author> authors) {
+    @Named("mapAuthorsToNames")
+    public List<String> mapAuthorsToNames(List<Author> authors) {
         return authors.stream()
-                .map(Author::getId)
+                .map(author -> author.getFirstName() + " " + author.getLastName())
                 .collect(Collectors.toList());
+    }
+
+    @Named("mapCategoryToName")
+    public String mapCategoryToName(Category category) {
+        return category != null ? category.getName() : "Unknown Category";
     }
 
     @Named("mapCategory")

@@ -27,8 +27,13 @@ public class BookResponse {
     @Schema(description = "The (ISBN) of the book.", example = "9780735211292")
     String isbn;
 
+
     @Schema(description = "The number of copies available in stock.", example = "50")
     int stockCount;
+
+
+    @Schema(description = "The category ID of the book.", example = "2")
+    Long categoryId;
 
     @Schema(description = "The name of the image file stored in the cloud.", example = "atomic_habits.jpg")
     String bookImage;
@@ -37,10 +42,12 @@ public class BookResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate publishedTime;
 
-    @Schema(description = "The ID of the category to which the book belongs.", example = "2")
-    Long categoryId;
+    private String categoryName;
 
-    @Schema(description = "A list of IDs for the authors of the book.", example = "[1]")
-    List<Long> authorId;
+    @Schema(description = "List of author IDs.", example = "[1, 3]")
+    List<Long> authorIds;
+
+    @Schema(description = "List of author names.", example = "[\"James Clear\"]")
+    List<String> authorNames;
 
 }

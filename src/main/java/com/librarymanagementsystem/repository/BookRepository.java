@@ -24,10 +24,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByName(String name);
 
 
-    @Query(
-            value = "SELECT b.* FROM books b " +
-                    "JOIN categories c ON b.category_id = c.id " +
-                    "WHERE c.name LIKE %:name%",
+    @Query(value = "SELECT b.* FROM books b " + "JOIN categories c ON b.category_id = c.id " + "WHERE c.name LIKE %:name%",
             countQuery = "SELECT COUNT(b.id) FROM books b " +
                     "JOIN categories c ON b.category_id = c.id " +
                     "WHERE c.name LIKE %:name%",
