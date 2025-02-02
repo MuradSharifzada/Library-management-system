@@ -5,7 +5,7 @@ import com.librarymanagementsystem.dto.request.AuthorRequest;
 import com.librarymanagementsystem.dto.response.AuthorResponse;
 import com.librarymanagementsystem.dto.response.BookResponse;
 import com.librarymanagementsystem.model.entity.Author;
-import com.librarymanagementsystem.model.entity.Book;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface AuthorService {
 
     void createAuthor(AuthorRequest request);
 
-    List<AuthorResponse> getAllAuthors(int pageNumber,int pageSize);
+    Page<AuthorResponse> getAllAuthors(int pageNumber, int pageSize);
 
     AuthorResponse getAuthorById(Long id);
 
@@ -23,5 +23,7 @@ public interface AuthorService {
 
     List<BookResponse> getBooksByAuthorId(Long authorId);
 
+    List<Author> getAuthorsById(List<Long> authorIds);
 
+    Long countAuthors();
 }
