@@ -13,8 +13,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     boolean existsByFirstNameAndLastName(String firstName, String lastName);
 
-    @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.id = :authorId")
-    List<Book> findBooksByAuthorId(@Param("authorId") Long authorId);
 
 
 }
