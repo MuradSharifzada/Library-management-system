@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>📚 Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-container {
+            font-size: 35px;
+            padding: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .bg-primary { background-color: #007BFF; }
+        .bg-success { background-color: #28A745; }
+        .bg-warning { background-color: #FFC107; }
+        .bg-info { background-color: #17A2B8; }
+        .bg-danger { background-color: #DC3545; }
+
+        .dashboard-card h4 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .dashboard-card a {
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="navbar-custom d-flex justify-content-between align-items-center">
+        <h4 class="m-0">📚 Library Management</h4>
+        <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+
+    <script>
+        setTimeout(function () {
+            alert("Your session has expired. Redirecting to login...");
+            window.location.href = "/login?sessionExpired=true";
+        }, 1800000);
+    </script>
+
+    <h2 class="dashboard-title">📊 Admin Dashboard</h2>
+    <p class="dashboard-subtitle">Manage and monitor the library system efficiently.</p>
+
+
+    <div class="dashboard-grid">
+        <!-- Books -->
+        <div class="dashboard-card">
+            <div class="icon-container bg-primary">
+                📚
+            </div>
+            <h4>Total Books</h4>
+            <p th:text="${totalBooks} + ' Books in Library'"></p>
+            <a href="/books" class="btn btn-outline-primary">Manage Books</a>
+        </div>
+
+
+        <div class="dashboard-card">
+            <div class="icon-container bg-success">
+                🎓
+            </div>
+            <h4>Registered Students</h4>
+            <p th:text="${totalStudents} + ' Students'"></p>
+            <a href="/students" class="btn btn-outline-success">Manage Students</a>
+        </div>
+
+
+        <div class="dashboard-card">
+            <div class="icon-container bg-warning">
+                📦
+            </div>
+            <h4>Active Orders</h4>
+            <p th:text="${totalOrders} + ' Orders'"></p>
+            <a href="/orders" class="btn btn-outline-warning">View Orders</a>
+        </div>
+
+
+        <div class="dashboard-card">
+            <div class="icon-container bg-info">
+                👨‍🏫
+            </div>
+            <h4>Authors</h4>
+            <p th:text="${totalAuthors} + ' Authors in System'"></p>
+            <a href="/authors" class="btn btn-outline-info">Manage Authors</a>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="icon-container bg-danger">
+                📂
+            </div>
+            <h4>Book Categories</h4>
+            <p th:text="${totalCategories} + ' Categories Available'"></p>
+            <a href="/categories" class="btn btn-outline-danger">Manage Categories</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
