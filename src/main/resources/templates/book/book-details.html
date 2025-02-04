@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>📖 Book Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* ✅ Main Content */
+        .container {
+            max-width: 800px;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* ✅ Book Image */
+        .book-image {
+            width: 100%;
+            max-width: 350px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ✅ Back Button */
+        .btn-back {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* ✅ Image Modal */
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-body img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Main Content Area -->
+<div class="container">
+    <h2 class="text-center text-primary">📖 Book Details</h2>
+
+    <div class="card">
+        <!-- ✅ Clickable Image (Opens in Modal) -->
+        <div class="text-center">
+            <img th:src="@{/books/{id}/image(id=${book.id})}"
+                 onerror="this.onerror=null; this.src='/default-placeholder.jpg';"
+                 alt="Book Image"
+                 class="img-thumbnail book-image"
+                 data-bs-toggle="modal"
+                 th:attr="data-bs-target='#imageModal-' + ${book.id}">
+        </div>
+
+        <div class="card-body">
+            <h4 class="text-dark">
+                <strong>Name:</strong> <span th:text="${book.name}"></span>
+            </h4>
+            <hr>
+            <p><strong>📌 ISBN:</strong> <span th:text="${book.isbn}"></span></p>
+            <p><strong>📝 Description:</strong> <span th:text="${book.description}"></span></p>
+            <p><strong>📅 Published Date:</strong> <span th:text="${book.publishedTime}"></span></p>
+            <p><strong>📦 Stock Count:</strong> <span th:text="${book.stockCount}"></span></p>
+
+            <!-- ✅ Authors List -->
+            <p><strong>✍ Authors:</strong>
+                <span th:if="${not #lists.isEmpty(book.authorNames)}">
+                    <span th:each="author, iterStat : ${book.authorNames}">
+                        <span th:text="${author}"></span><span th:if="${!iterStat.last}">, </span>
+                    </span>
+                </span>
+                <span th:if="${#lists.isEmpty(book.authorNames)}">No Authors</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- ✅ Back Button -->
+    <div class="text-center mt-4">
+        <a href="/books" class="btn btn-secondary btn-back">⬅ Back to Book List</a>
+    </div>
+</div>
+
+<!-- ✅ Image Modal (Opens When Clicked) -->
+<div class="modal fade" th:id="'imageModal-' + ${book.id}" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📷 Book Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img th:src="@{/books/{id}/image(id=${book.id})}"
+                     onerror="this.onerror=null; this.src='/default-placeholder.jpg';"
+                     class="img-fluid rounded" alt="Book Image">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
