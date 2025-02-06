@@ -105,7 +105,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public List<Author> getAuthorsById(List<Long> authorIds) {
+    public List<Author> getauthorsbyids(List<Long> authorIds) {
         List<Author> authors = authorRepository.findAllById(authorIds);
         if (authors.isEmpty()) {
             throw new ResourceNotFoundException("No valid authors found for the given IDs.");

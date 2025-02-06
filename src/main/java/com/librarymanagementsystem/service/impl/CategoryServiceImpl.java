@@ -79,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = categoryRepository.findById(id).orElseThrow(() -> {
             log.error("Category retrieval failed - category with ID: {} not found", id);
-            throw new ResourceNotFoundException("Category not found with ID: " + id);
+            return new ResourceNotFoundException("Category not found with ID: " + id);
         });
 
         log.info("Successfully retrieved category with ID: {}", id);

@@ -12,4 +12,8 @@ public interface OrderService {
     void borrowOrder(OrderRequest request);
 
     void returnOrder(OrderRequest orderRequest);
+
+    Long countOrders();
+
+    public List<OrderResponse> getAllBorrowedOrders(int pageNumber, int size);
 }

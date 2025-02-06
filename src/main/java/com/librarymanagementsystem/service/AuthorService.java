@@ -23,7 +23,7 @@ public interface AuthorService {
 
     List<BookResponse> getBooksByAuthorId(Long authorId);
 
-    List<Author> getAuthorsById(List<Long> authorIds);
+    List<Author> getauthorsbyids(List<Long> authorIds);
 
     Long countAuthors();
 }

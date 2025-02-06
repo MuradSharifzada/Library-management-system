@@ -22,7 +22,7 @@ public class BookMapperTest {
     public void testRequestToEntity() {
         BookRequest request = new BookRequest();
         request.setCategoryId(1L);
-        request.setAuthorId(List.of(2L, 3L));
+        request.setAuthorIds(List.of(2L, 3L));
 
         Book book = bookMapper.requestToEntity(request);
 

@@ -8,6 +8,7 @@ import com.librarymanagementsystem.mapper.OrderMapper;
 import com.librarymanagementsystem.model.entity.Book;
 import com.librarymanagementsystem.model.entity.Order;
 import com.librarymanagementsystem.model.entity.Student;
+import com.librarymanagementsystem.model.enums.Status;
 import com.librarymanagementsystem.repository.BookRepository;
 import com.librarymanagementsystem.repository.OrderRepository;
 import com.librarymanagementsystem.repository.StudentRepository;
@@ -77,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
         order.setBook(book);
         order.setStudent(student);
         order.setOrderDate(LocalDateTime.now());
+        order.setStatus(Status.BORROWED);
         order.setReturnDate(null);
 
         book.setStockCount(book.getStockCount() - 1);
@@ -113,11 +115,28 @@ public class OrderServiceImpl implements OrderService {
         });
 
         order.setReturnDate(LocalDateTime.now());
+        order.setStatus(Status.RETURNED);
         orderRepository.save(order);
         log.info("Order returned: Student ID {}, Book ID {}", student.getId(), book.getId());
 
         book.setStockCount(book.getStockCount() + 1);
         bookRepository.save(book);
         log.info("Stock updated: Book ID {}, current stock {}", book.getId(), book.getStockCount());
+    }
+
+    @Override
+    public Long countOrders() {
+        return orderRepository.count();
+    }
+
+    @Override
+    public List<OrderResponse> getAllBorrowedOrders(int pageNumber, int size) {
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        Page<Order> ordersPage = orderRepository.findAll(pageable);
+
+        return ordersPage.getContent().stream()
+                .filter(order -> order.getReturnDate() == null)
+                .map(orderMapper::entityToResponse)
+                .collect(Collectors.toList());
     }
 }

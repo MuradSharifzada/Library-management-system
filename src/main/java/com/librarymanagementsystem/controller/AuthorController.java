@@ -80,6 +80,13 @@ public class AuthorController {
         return "redirect:/authors";
     }
 
+    @GetMapping("/details/{id}")
+    public String getAuthorById(@PathVariable Long id, Model model) {
+        AuthorResponse author = authorService.getAuthorById(id);
+        model.addAttribute("author", author);
+        return "author/author-details";
+    }
+
 
 
 }

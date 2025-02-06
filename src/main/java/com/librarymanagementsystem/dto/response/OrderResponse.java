@@ -1,6 +1,7 @@
 package com.librarymanagementsystem.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.librarymanagementsystem.model.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -29,6 +30,9 @@ public class OrderResponse {
     @Schema(description = "The date and time by which the order must be returned.", example = "2025-01-06T10:30:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDateTime returnDate;
+
+    @Schema(description = "The current status of the order.", example = "BORROWED")
+    Status status=Status.BORROWED;
 
 
 }

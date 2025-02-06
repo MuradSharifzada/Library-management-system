@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>📖 Borrow a Book</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 500px;
+            margin-top: 50px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            background: white;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn-borrow {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 12px 18px;
+            transition: 0.3s ease;
+        }
+        .btn-borrow:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 12px 18px;
+            transition: 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h3 class="text-center text-primary">📖 Borrow a Book</h3>
+
+        <form th:action="@{/orders/borrow}" th:object="${order}" method="post">
+            <!-- Student Selection -->
+            <div class="mb-3">
+                <label for="studentId" class="form-label">👨‍🎓 Select Student:</label>
+                <select id="studentId" name="studentId" class="form-control" th:field="*{studentId}" required>
+                    <option value="">-- Select Student --</option>
+                    <option th:each="student : ${students}"
+                            th:value="${student.id}"
+                            th:text="${student.firstName + ' ' + student.lastName}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Book Selection -->
+            <div class="mb-3">
+                <label for="bookId" class="form-label">📚 Select Book:</label>
+                <select id="bookId" name="bookId" class="form-control" th:field="*{bookId}" required>
+                    <option value="">-- Select Book --</option>
+                    <option th:each="book : ${books}"
+                            th:value="${book.id}"
+                            th:text="${book.name}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="btn-container">
+                <button type="submit" class="btn btn-borrow">➕ Borrow</button>
+                <a href="/orders" class="btn btn-back">🔙 Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

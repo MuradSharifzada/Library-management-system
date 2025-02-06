@@ -19,6 +19,6 @@ public interface OrderMapper {
     Order requestToEntity(OrderRequest request);
 
     @Mapping(target = "book.categoryId", ignore = true)
-    @Mapping(target = "book.authorId", ignore = true)
+    @Mapping(target = "book.authorIds", ignore = true)
     OrderResponse entityToResponse(Order order);
 }

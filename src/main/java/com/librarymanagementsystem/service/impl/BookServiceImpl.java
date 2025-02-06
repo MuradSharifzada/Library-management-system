@@ -12,6 +12,7 @@ import com.librarymanagementsystem.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class BookServiceImpl implements BookService {
     private final StorageService storageService;
 
     @Override
-    public void createBook(BookRequest request) {
+    public void createBook(BookRequest request, MultipartFile file) {
         log.info("Trying to create a new book with name: {}", request.getName());
 
         bookRepository
@@ -62,7 +64,7 @@ public class BookServiceImpl implements BookService {
         log.info("Successfully retrieved all books with page number: {}", pageNumber);
         return books.stream()
                 .map(bookMapper::entityToResponse)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -91,7 +93,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateBook(Long id, BookRequest request) {
+    public void updateBook(Long id, BookRequest request, MultipartFile file) {
         log.info("Trying to update book with id: {}", id);
 
 
@@ -105,34 +107,6 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(updatedBook);
         log.info("Book updated successfully with name: {}", request.getName());
 
-    }
-
-    @Override
-    public List<BookResponse> findByBookName(String name, int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        if (pageSize < 0) {
-            throw new IllegalArgumentException("Page must be positive or not equal to " + pageNumber);
-        }
-
-        log.info("Retrieved books by name");
-        return bookRepository.findByName(name, pageable)
-                .stream().map(bookMapper::entityToResponse).collect(Collectors.toList());
-    }
-
-
-    @Override
-    public List<BookResponse> findBooksByCategory(String name, int pageNumber, int pageSize) {
-        log.info("Trying to find books by category name: {}", name);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        List<BookResponse> books = bookRepository.findBooksByCategory(name, pageable)
-                .stream()
-                .map(bookMapper::entityToResponse)
-                .collect(Collectors.toList());
-
-        log.info("Successfully retrieved {} books for category name: {}", books.size(), name);
-        return books;
     }
 
     @Override
@@ -171,7 +145,7 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookRepository.findById(id).orElseThrow(() -> {
             log.info("Book not found with id: {} for downloading", id);
-            throw new ResourceNotFoundException("Book not found with id: {} for downloading " + id);
+            return new ResourceNotFoundException("Book not found with id: {} for downloading " + id);
         });
         if (book.getBookImage() == null || book.getBookImage().isEmpty()) {
             throw new ResourceNotFoundException("Image not found for book ID: " + book.getId());
@@ -213,6 +187,39 @@ public class BookServiceImpl implements BookService {
             throw new IOException("Unexpected error deleting book image for book ID: " + id, e);
         }
     }
+
+    @Override
+    public Long countBooks() {
+        return bookRepository.count();
+    }
+
+    @Override
+    public Page<BookResponse> getFilteredBooks(String category, String bookName, int page, int size) {
+        log.info("Fetching filtered books with category: {} and bookName: {}", category, bookName);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books;
+
+        if ((category != null && !category.isEmpty()) && (bookName != null && !bookName.isEmpty())) {
+
+            books = bookRepository.findBooksByCategory(category, pageable);
+
+            List<Book> filteredBooks = books.getContent().stream()
+                    .filter(book -> book.getName().toLowerCase().contains(bookName.toLowerCase()))
+                    .toList();
+
+            books = new PageImpl<>(filteredBooks, pageable, filteredBooks.size());
+        } else if (category != null && !category.isEmpty()) {
+            books = bookRepository.findBooksByCategory(category, pageable);
+        } else if (bookName != null && !bookName.isEmpty()) {
+            books = bookRepository.findByName(bookName, pageable);
+        } else {
+            books = bookRepository.findAll(pageable);
+        }
+
+        return books.map(bookMapper::entityToResponse);
+    }
+
 
 
 }

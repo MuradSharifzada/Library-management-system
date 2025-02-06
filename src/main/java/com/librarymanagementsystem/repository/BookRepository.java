@@ -9,10 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
+
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-
     Optional<Book> findByIsbn(String isbn);
+
+    boolean existsByName(String name);
 
     @Query(
             value = "SELECT * FROM books WHERE name ~* :name",
@@ -21,16 +23,14 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     )
     Page<Book> findByName(@Param("name") String name, Pageable pageable);
 
-    boolean existsByName(String name);
-
-
-    @Query(value = "SELECT b.* FROM books b " + "JOIN categories c ON b.category_id = c.id " + "WHERE c.name LIKE %:name%",
+    @Query(
+            value = "SELECT b.* FROM books b " +
+                    "JOIN categories c ON b.category_id = c.id " +
+                    "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))",
             countQuery = "SELECT COUNT(b.id) FROM books b " +
                     "JOIN categories c ON b.category_id = c.id " +
-                    "WHERE c.name LIKE %:name%",
+                    "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))",
             nativeQuery = true
     )
     Page<Book> findBooksByCategory(@Param("name") String name, Pageable pageable);
-
-
 }

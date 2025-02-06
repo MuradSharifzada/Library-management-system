@@ -1,6 +1,7 @@
 package com.librarymanagementsystem.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -39,6 +40,8 @@ public class Order {
     @JoinColumn(name = "book_id", nullable = false)
     Book book;
 
+    @Enumerated(EnumType.STRING)
+    Status status;
 
 
 }

@@ -39,4 +39,12 @@ public class BookMapperHelper {
                     return author;
                 }).collect(Collectors.toList());
     }
+
+    @Named("mapAuthorsToIds")
+    public List<Long> mapAuthorsToIds(List<Author> authors) {
+        return authors.stream()
+                .map(Author::getId)
+                .collect(Collectors.toList());
+    }
+
 }
