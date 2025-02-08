@@ -37,10 +37,7 @@ public class Author {
 
 
     @ToString.Exclude
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "authors_books",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @ManyToMany(mappedBy = "authors", cascade = CascadeType.MERGE)
     List<Book> books=new ArrayList<>();
 
 

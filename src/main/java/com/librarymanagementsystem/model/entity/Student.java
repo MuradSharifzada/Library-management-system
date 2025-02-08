@@ -22,7 +22,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(unique = true, nullable = false, updatable = false)
+    @Column(unique = true, nullable = false)
     String fin;
 
     @Column(nullable = false, unique = true)

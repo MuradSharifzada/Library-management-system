@@ -71,7 +71,13 @@ public class BookController {
     @GetMapping("/update/{id}")
     public String updateBookForm(@PathVariable Long id, Model model) {
         BookResponse bookResponse = bookService.getBookById(id);
+
         model.addAttribute("book", bookResponse);
+
+        model.addAttribute("categories", categoryService.getAllCategory(0, Integer.MAX_VALUE));
+
+        model.addAttribute("authors", authorService.getAllAuthors(0, Integer.MAX_VALUE));
+
         return "book/update-book";
     }
 
@@ -94,6 +100,7 @@ public class BookController {
     public String getBookById(@PathVariable Long id, Model model) {
         BookResponse bookResponse = bookService.getBookById(id);
         model.addAttribute("book", bookResponse);
+        model.addAttribute("authors",authorService.getauthorsbyids(bookResponse.getAuthorIds()));
         return "book/book-details";
     }
 

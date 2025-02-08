@@ -1,87 +1,82 @@
 package com.librarymanagementsystem.exception;
 
-import com.librarymanagementsystem.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import org.springframework.ui.Model;
 
-@RestControllerAdvice
+@ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {
+    @ExceptionHandler({
             ResourceNotFoundException.class,
             ResourceAlreadyExistsException.class,
             InsufficientCountException.class,
             IllegalStateException.class
     })
-
-    public ResponseEntity<ErrorResponse> handleCustomExceptions(Exception ex) {
-        log.error("Exception: {}", ex.getMessage(), ex);
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .date(LocalDateTime.now())
-                .status(getHttpStatus(ex))
-                .errorCode(getHttpStatus(ex).value())
-                .errorMessage(ex.getMessage())
-                .build();
-
-        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    public String handleCustomExceptions(Exception ex, Model model) {
+        log.error("Custom Exception Caught: {}", ex.getMessage(), ex);
+        model.addAttribute("errorTitle", getFriendlyTitle(ex));
+        model.addAttribute("errorMessage", getFriendlyMessage(ex));
+        return "error";
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    ErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        ErrorResponse error = new ErrorResponse();
-        String errorMessage = e.getBindingResult()
+    public String handleValidationException(MethodArgumentNotValidException ex, Model model) {
+        String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(error -> error.getDefaultMessage())
                 .findFirst()
-                .orElse("Validation Error");
-        error.setErrorMessage(errorMessage);
-        error.setErrorCode(HttpStatus.BAD_REQUEST.value());
-        error.setDate(LocalDateTime.now());
-        error.setStatus(HttpStatus.BAD_REQUEST);
-        log.error("Validation failed for argument: {}", errorMessage);
-        return error;
-    }
-
-
-    private HttpStatus getHttpStatus(Exception ex) {
-        if (ex instanceof ResourceNotFoundException) {
-            return HttpStatus.NOT_FOUND;
-        } else if (ex instanceof ResourceAlreadyExistsException) {
-            return HttpStatus.CONFLICT;
-        } else if (ex instanceof InsufficientCountException) {
-            return HttpStatus.BAD_REQUEST;
-        }
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+                .orElse("Invalid input data. Please check your form.");
+        log.error("Validation Error: {}", errorMessage, ex);
+        model.addAttribute("errorTitle", "Validation Issue");
+        model.addAttribute("errorMessage", errorMessage);
+        return "error";
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
-        log.error("IO exception occurred: {}", ex.getMessage(), ex);
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .date(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .errorMessage(ex.getMessage())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    public String handleIOException(IOException ex, Model model) {
+        log.error("IO Exception Occurred: {}", ex.getMessage(), ex);
+        model.addAttribute("errorTitle", "System Error");
+        model.addAttribute("errorMessage", "Something went wrong while processing your request. Please try again later.");
+        return "error";
     }
 
+    @ExceptionHandler(Exception.class)
+    public String handleGenericException(Exception ex, Model model) {
+        log.error("Unexpected Exception: {}", ex.getMessage(), ex);
+        model.addAttribute("errorTitle", "An Unexpected Error Occurred");
+        model.addAttribute("errorMessage", "We encountered an issue. Please try again or contact support.");
+        return "error";
+    }
+
+    private String getFriendlyTitle(Exception ex) {
+        if (ex instanceof ResourceNotFoundException) {
+            return "Oops! We couldn't find that";
+        } else if (ex instanceof ResourceAlreadyExistsException) {
+            return "This item already exists!";
+        } else if (ex instanceof InsufficientCountException) {
+            return "Not Enough Stock Available";
+        } else if (ex instanceof IllegalStateException) {
+            return "Action Not Allowed";
+        }
+        return "Something went wrong!";
+    }
+
+    private String getFriendlyMessage(Exception ex) {
+        if (ex instanceof ResourceNotFoundException) {
+            return "We couldn't find what you're looking for. It might have been moved or deleted.";
+        } else if (ex instanceof ResourceAlreadyExistsException) {
+            return "This item already exists in our system. Try using a different one.";
+        } else if (ex instanceof InsufficientCountException) {
+            return "Oops! We don’t have enough stock available for your request. Please try again with fewer items.";
+        } else if (ex instanceof IllegalStateException) {
+            return "You have already borrowed this book and need to return it before borrowing again.";
+        }
+        return "Something went wrong on our end. Please refresh the page or try again later. If the issue persists, contact support.";
+    }
 
 }

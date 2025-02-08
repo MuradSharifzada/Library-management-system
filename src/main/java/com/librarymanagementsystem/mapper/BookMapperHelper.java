@@ -2,14 +2,26 @@ package com.librarymanagementsystem.mapper;
 
 import com.librarymanagementsystem.model.entity.Author;
 import com.librarymanagementsystem.model.entity.Category;
+import com.librarymanagementsystem.repository.AuthorRepository;
+import com.librarymanagementsystem.repository.CategoryRepository;
+import com.librarymanagementsystem.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class BookMapperHelper {
+
+
+    private final CategoryRepository categoryRepository;
+
+    private final AuthorRepository authorRepository;
 
     @Named("mapAuthorsToNames")
     public List<String> mapAuthorsToNames(List<Author> authors) {
@@ -25,26 +37,19 @@ public class BookMapperHelper {
 
     @Named("mapCategory")
     public Category mapCategory(Long categoryId) {
-        Category category = new Category();
-        category.setId(categoryId);
-        return category;
+        if (categoryId == null) return null;
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
     }
 
     @Named("mapAuthors")
     public List<Author> mapAuthors(List<Long> authorIds) {
-        return authorIds.stream()
-                .map(id -> {
-                    Author author = new Author();
-                    author.setId(id);
-                    return author;
-                }).collect(Collectors.toList());
+        if (authorIds == null || authorIds.isEmpty()) return List.of();
+        return authorRepository.findAllById(authorIds);
     }
 
     @Named("mapAuthorsToIds")
     public List<Long> mapAuthorsToIds(List<Author> authors) {
-        return authors.stream()
-                .map(Author::getId)
-                .collect(Collectors.toList());
+        return authors != null ? authors.stream().map(Author::getId).collect(Collectors.toList()) : Collections.emptyList();
     }
-
 }

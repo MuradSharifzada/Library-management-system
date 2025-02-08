@@ -2,12 +2,18 @@ package com.librarymanagementsystem.service.impl;
 
 import com.librarymanagementsystem.dto.request.BookRequest;
 import com.librarymanagementsystem.dto.response.BookResponse;
+import com.librarymanagementsystem.dto.response.CategoryResponse;
+import com.librarymanagementsystem.exception.ImageProcessingException;
 import com.librarymanagementsystem.exception.ResourceAlreadyExistsException;
 import com.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.librarymanagementsystem.mapper.BookMapper;
+import com.librarymanagementsystem.model.entity.Author;
 import com.librarymanagementsystem.model.entity.Book;
+import com.librarymanagementsystem.model.entity.Category;
 import com.librarymanagementsystem.repository.BookRepository;
+import com.librarymanagementsystem.service.AuthorService;
 import com.librarymanagementsystem.service.BookService;
+import com.librarymanagementsystem.service.CategoryService;
 import com.librarymanagementsystem.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,24 +37,51 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final StorageService storageService;
+    private final CategoryService categoryService;
+    private final AuthorService authorService;
+
 
     @Override
     public void createBook(BookRequest request, MultipartFile file) {
         log.info("Trying to create a new book with name: {}", request.getName());
 
-        bookRepository
-                .findByIsbn(request.getIsbn())
-                .ifPresent(existingBook -> {
-                    log.error("ISBN {} already exists in the database", request.getIsbn());
-                    throw new ResourceAlreadyExistsException("Book ISBN already exists: " + request.getIsbn());
-                });
-        bookRepository.save(bookMapper.requestToEntity(request));
-        log.info("Successfully created new book with name: {}", request.getName());
+        if (bookRepository.findByIsbn(request.getIsbn()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Book ISBN already exists: " + request.getIsbn());
+        }
 
+
+        Book book = bookMapper.requestToEntity(request);
+
+        CategoryResponse categoryResponse = categoryService.getCategoryById(request.getCategoryId());
+        Category category = new Category();
+        category.setId(categoryResponse.getId());
+        book.setCategory(category);
+
+
+        List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
+        book.setAuthors(authors);
+
+
+        book = bookRepository.save(book);
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                uploadBookImage(book.getId(), file);
+
+            } catch (IOException e) {
+                log.error("Error occurred while uploading image: {}", e.getMessage());
+                throw new ImageProcessingException("Image not uploaded for book id:" + book.getId());
+
+            }
+        }
+
+
+        log.info("Successfully created new book with name: {}", request.getName());
     }
 
+
     @Override
-    public List<BookResponse> getAllBooks(int pageNumber, int size) {
+    public Page<BookResponse> getAllBooks(int pageNumber, int size) {
         log.info("Trying to retrieve all books with page number: {}", pageNumber);
 
         Pageable pageable = PageRequest.of(pageNumber, size);
@@ -62,9 +95,8 @@ public class BookServiceImpl implements BookService {
         }
 
         log.info("Successfully retrieved all books with page number: {}", pageNumber);
-        return books.stream()
-                .map(bookMapper::entityToResponse)
-                .collect(toList());
+        return books.map(bookMapper::entityToResponse);
+
     }
 
     @Override
@@ -87,6 +119,12 @@ public class BookServiceImpl implements BookService {
             log.info("Book not exist for deleting with id: {}", id);
             return new ResourceNotFoundException("book not exist for deleting with id: " + id);
         });
+        try {
+            deleteBookImage(book.getId());
+        } catch (IOException e) {
+            throw new ImageProcessingException("Not deleted Book image with id:" + book.getId());
+        }
+
         bookRepository.deleteById(id);
         log.info("Successfully Deleted book with id: {}", id);
 
@@ -101,13 +139,45 @@ public class BookServiceImpl implements BookService {
             log.info("Book not found for update with id: {}", id);
             return new ResourceNotFoundException("Book not found for update with id: " + id);
         });
-        Book updatedBook = bookMapper.requestToEntity(request);
-        updatedBook.setId(existingBook.getId());
+        bookMapper.updateEntityFromRequest(request, existingBook);
 
-        bookRepository.save(updatedBook);
+        if (request.getCategoryId() != null) {
+            CategoryResponse categoryResponse = categoryService.getCategoryById(request.getCategoryId());
+            Category category = new Category();
+            category.setId(categoryResponse.getId());
+            existingBook.setCategory(category);
+        }
+
+        System.out.println("Author ids null gelir "+request.getAuthorIds());
+        if (request.getAuthorIds() != null && !request.getAuthorIds().isEmpty()) {
+            System.out.println("-----------------------------------------------------");
+            List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
+            existingBook.setAuthors(authors);
+        }
+
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String newFileName = storageService.uploadFile(file);
+                String oldImage = existingBook.getBookImage();
+                existingBook.setBookImage(newFileName);
+                if (oldImage != null) {
+                    storageService.deleteFile(oldImage);
+                }
+            } catch (IOException e) {
+                log.error("Error uploading book image: {}", e.getMessage());
+                throw new RuntimeException("Error uploading book image.");
+            }
+        } else {
+            log.info("No new image uploaded. Keeping existing image.");
+        }
+
+        // ✅ Save the book with updated category and authors
+        bookRepository.save(existingBook);
         log.info("Book updated successfully with name: {}", request.getName());
-
     }
+
+
 
     @Override
     public void uploadBookImage(Long id, MultipartFile file) throws IOException {
@@ -115,9 +185,6 @@ public class BookServiceImpl implements BookService {
             log.info("Book Image not found with id: {}", id);
             return new ResourceNotFoundException("Book Image not found with id: " + id);
         });
-//        if (!book.getBookImage().isEmpty()) {
-//            throw new ResourceAlreadyExistsException("The book already has an image. Please remove it before then trying  again.");
-//        }
 
         if (file == null || file.isEmpty()) {
             log.error("Failed to upload image file is empty or null for book ID: {}", id);
@@ -219,7 +286,6 @@ public class BookServiceImpl implements BookService {
 
         return books.map(bookMapper::entityToResponse);
     }
-
 
 
 }

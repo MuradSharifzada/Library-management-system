@@ -3,97 +3,31 @@
 <head>
     <title>📖 Return a Book</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            max-width: 500px;
-            margin-top: 50px;
-        }
-
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            background: white;
-        }
-
-        .form-label {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .btn-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .btn-return {
-            background-color: #28a745;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            padding: 12px 18px;
-            transition: 0.3s ease;
-        }
-        .btn-return:hover {
-            background-color: #218838;
-        }
-
-        .btn-back {
-            background-color: #6c757d;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            padding: 12px 18px;
-            transition: 0.3s ease;
-        }
-        .btn-back:hover {
-            background-color: #5a6268;
-        }
-
-        .alert-warning {
-            font-size: 14px;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="card">
+<div class="container mt-5">
+    <div class="card p-4 shadow-lg">
         <h3 class="text-center text-success">📖 Return a Book</h3>
 
-        <!-- Alert if there are no borrowed books -->
-        <div th:if="${#lists.isEmpty(borrowedOrders)}" class="alert alert-warning text-center">
-            ⚠ No borrowed books found for return.
+        <!-- Alert if no borrowed books -->
+        <div th:if="${not hasBorrowedOrders}" class="alert alert-danger text-center">
+            ⚠ No borrowed books found for return. Please borrow a book first.
         </div>
 
-        <form th:action="@{/orders/return}" method="post">
+        <form th:action="@{/orders/return}" method="post" th:if="${hasBorrowedOrders}">
 
             <!-- Borrowed Book Selection -->
             <div class="mb-3">
                 <label for="orderId" class="form-label">📚 Select Borrowed Order:</label>
-                <select id="orderId" name="orderId" class="form-control" required>
+                <select id="orderId" name="orderId" class="form-control" required
+                        onchange="updateHiddenFields(this)">
                     <option value="">-- Select Order to Return --</option>
                     <option th:each="order : ${borrowedOrders}"
                             th:value="${order.id}"
                             th:data-student-id="${order.student.id}"
                             th:data-book-id="${order.book.id}"
-                            th:text="'Order #' + ${order.id} + ' | ' + ${order.student.firstName} + ' ' + ${order.student.lastName} + ' | ' + ${order.book.name} + ' (Borrowed: ' + ${#temporals.format(order.orderDate, 'yyyy-MM-dd') + ')' }">
+                            th:text="'Order #' + ${order.id} + ' | ' + ${order.student.firstName} + ' ' + ${order.student.lastName} + ' | ' + ${order.book.name} + ' (Borrowed: ' + ${#temporals.format(order.orderDate, 'yyyy-MM-dd')} + ')'">
                     </option>
                 </select>
             </div>
@@ -103,41 +37,29 @@
             <input type="hidden" id="bookId" name="bookId">
 
             <!-- Action Buttons -->
-            <div class="btn-container">
-                <button type="submit" class="btn btn-return">🔄 Return</button>
-                <a href="/orders" class="btn btn-back">🔙 Back</a>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">🔄 Return</button>
+                <a href="/orders" class="btn btn-secondary">🔙 Back</a>
             </div>
 
         </form>
 
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" class="page-item" th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/orders/return(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
-                </li>
-            </ul>
-        </nav>
+        <!-- Back Button if No Borrowed Books -->
+        <div th:if="${not hasBorrowedOrders}" class="text-center mt-3">
+            <a href="/orders" class="btn btn-secondary">🔙 Back to Orders</a>
+        </div>
+
+        <script>
+            function updateHiddenFields(select) {
+                let selectedOption = select.options[select.selectedIndex];
+                document.getElementById("studentId").value = selectedOption.getAttribute("data-student-id");
+                document.getElementById("bookId").value = selectedOption.getAttribute("data-book-id");
+            }
+        </script>
+
 
     </div>
 </div>
-
-<!-- ✅ JavaScript to Populate Hidden Fields Correctly -->
-<script>
-    document.getElementById("orderId").addEventListener("change", function() {
-        let selectedOption = this.options[this.selectedIndex];
-
-        let studentId = selectedOption.getAttribute("data-student-id");
-        let bookId = selectedOption.getAttribute("data-book-id");
-
-        // Set hidden input values
-        document.getElementById("studentId").value = studentId ? studentId : '';
-        document.getElementById("bookId").value = bookId ? bookId : '';
-
-        console.log("Selected Order ID:", this.value);
-        console.log("Student ID:", studentId);
-        console.log("Book ID:", bookId);
-    });
-</script>
 
 </body>
 </html>

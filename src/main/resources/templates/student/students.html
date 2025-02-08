@@ -3,16 +3,114 @@
 <head>
     <title>Students List</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .table {
+            margin-top: 20px;
+        }
+        .table th {
+            background: #2575fc;
+            color: white;
+            text-align: center;
+        }
+        .table tbody tr:hover {
+            background: rgba(37, 117, 252, 0.1);
+        }
+        .btn {
+            font-size: 16px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-sm {
+            font-size: 15px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease-in-out;
+        }
+        /* Add New Student Button */
+        .btn-primary {
+            background: #28a745;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+        /* Edit Button */
+        .btn-warning {
+            background: #ffcc00;
+            border: none;
+            color: #333;
+        }
+        .btn-warning:hover {
+            background: #ffb300;
+            transform: scale(1.05);
+            color: white;
+        }
+        /* Details Button */
+        .btn-info {
+            background: #17a2b8;
+            border: none;
+            color: white;
+        }
+        .btn-info:hover {
+            background: #138496;
+            transform: scale(1.05);
+        }
+        /* Delete Button */
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+        /* Pagination */
+        .pagination .page-item .page-link {
+            color: #2575fc;
+            font-weight: bold;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #2575fc;
+            border-color: #2575fc;
+            color: white;
+        }
+        .pagination .page-item .page-link:hover {
+            background: #6a11cb;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h2>Student List</h2>
+<div class="container">
+    <h2><i class="fas fa-users"></i> Student List</h2>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="/students/add" class="btn btn-primary mb-3">Add New Student</a>
-        <a href="/admin" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Go to Admin Panel</a>
+        <a href="/students/add" class="btn btn-primary"><i class="fas fa-user-plus"></i> Add New Student</a>
+        <a href="/admin" class="btn btn-dark" sec:authorize="hasRole('ROLE_ADMIN')"><i class="fas fa-cog"></i> Admin Panel</a>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover text-center">
         <thead>
         <tr>
             <th>FIN</th>
@@ -34,11 +132,17 @@
             <td th:text="${student.phoneNumber}"></td>
             <td th:text="${student.studentGroup}"></td>
             <td th:text="${student.birthDate}"></td>
-            <td>
-                <a th:href="@{/students/update/{id}(id=${student.id})}" class="btn btn-warning btn-sm">Edit</a>
-                <a th:href="@{/students/details/{id}(id=${student.id})}" class="btn btn-info btn-sm">Details</a>
+            <td class="text-center">
+                <a th:href="@{/students/update/{id}(id=${student.id})}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a th:href="@{/students/details/{id}(id=${student.id})}" class="btn btn-info btn-sm">
+                    <i class="fas fa-eye"></i> Details
+                </a>
                 <form th:action="@{/students/delete/{id}(id=${student.id})}" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
                 </form>
             </td>
         </tr>
@@ -47,8 +151,10 @@
 
     <!-- Pagination -->
     <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
+        <ul class="pagination justify-content-center">
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item"
+                th:classappend="${i == currentPage} ? 'active' : ''">
                 <a class="page-link" th:href="@{/students(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
             </li>
         </ul>

@@ -9,12 +9,9 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
 
-  
-    boolean existsByBookAndStudentAndReturnDateIsNull(Book book, Student student);
+
 
     Optional<Order> findByStudentIdAndBookIdAndReturnDateIsNull(Long studentId, Long bookId);
 
-    long countByStudentAndReturnDateIsNull(Student student);
-
-    long countByStudentAndBook(Student student, Book book);
+    boolean existsByStudentAndReturnDateIsNull(Student student);
 }

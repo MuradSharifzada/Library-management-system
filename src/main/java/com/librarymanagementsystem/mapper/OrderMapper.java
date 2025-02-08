@@ -12,10 +12,7 @@ import org.mapstruct.ReportingPolicy;
 public interface OrderMapper {
 
     @Mapping(target = "returnDate", ignore = true)
-//    @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "orderDate", ignore = true)
-//    @Mapping(target = "student", ignore = true)
-//    @Mapping(target = "book", ignore = true)
+    @Mapping(target = "id", ignore = true)
     Order requestToEntity(OrderRequest request);
 
     @Mapping(target = "book.categoryId", ignore = true)

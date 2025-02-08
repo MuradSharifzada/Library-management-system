@@ -3,7 +3,6 @@ package com.librarymanagementsystem.controller;
 import com.librarymanagementsystem.dto.request.StudentRequest;
 import com.librarymanagementsystem.dto.response.StudentResponse;
 import com.librarymanagementsystem.service.StudentService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/students")

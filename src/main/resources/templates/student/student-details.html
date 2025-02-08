@@ -3,21 +3,88 @@
 <head>
     <title>Student Details</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+        }
+        .student-details {
+            padding: 20px;
+            font-size: 18px;
+        }
+        .student-details p {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 0;
+        }
+        .student-details p i {
+            width: 30px;
+            font-size: 20px;
+            margin-right: 12px;
+            color: #2575fc;
+        }
+        .btn-back {
+            background: #28a745; /* ✅ Changed to Green */
+            border: none;
+            font-size: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: 0.3s;
+            width: 100%;
+            color: white;
+        }
+        .btn-back:hover {
+            background: #218838; /* ✅ Darker Green on Hover */
+            transform: scale(1.05);
+        }
+        @media (max-width: 768px) {
+            .card {
+                margin-top: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h2>Student Details</h2>
-
-    <p><strong>FIN:</strong> <span th:text="${student.fin}"></span></p>
-    <p><strong>First Name:</strong> <span th:text="${student.firstName}"></span></p>
-    <p><strong>Last Name:</strong> <span th:text="${student.lastName}"></span></p>
-    <p><strong>Email:</strong> <span th:text="${student.email}"></span></p>
-    <p><strong>Phone Number:</strong> <span th:text="${student.phoneNumber}"></span></p>
-    <p><strong>Student Group:</strong> <span th:text="${student.studentGroup}"></span></p>
-    <p><strong>Birth Date:</strong> <span th:text="${student.birthDate}"></span></p>
-    <p><strong>Enrollment Date:</strong> <span th:text="${student.enrollmentDate}"></span></p>
-
-    <a href="/students" class="btn btn-secondary">Back to List</a>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user-graduate"></i> Student Details
+            </div>
+            <div class="student-details">
+                <p><i class="fas fa-id-card"></i> <strong>FIN:</strong> <span th:text="${student.fin}"></span></p>
+                <p><i class="fas fa-user"></i> <strong>First Name:</strong> <span th:text="${student.firstName}"></span></p>
+                <p><i class="fas fa-user"></i> <strong>Last Name:</strong> <span th:text="${student.lastName}"></span></p>
+                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span th:text="${student.email}"></span></p>
+                <p><i class="fas fa-phone"></i> <strong>Phone Number:</strong> <span th:text="${student.phoneNumber}"></span></p>
+                <p><i class="fas fa-users"></i> <strong>Student Group:</strong> <span th:text="${student.studentGroup}"></span></p>
+                <p><i class="fas fa-birthday-cake"></i> <strong>Birth Date:</strong> <span th:text="${student.birthDate}"></span></p>
+                <p><i class="fas fa-calendar-alt"></i> <strong>Enrollment Date:</strong> <span th:text="${student.enrollmentDate}"></span></p>
+            </div>
+            <div class="text-center p-3">
+                <a href="/students" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

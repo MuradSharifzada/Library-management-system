@@ -15,5 +15,5 @@ public interface OrderService {
 
     Long countOrders();
 
-    public List<OrderResponse> getAllBorrowedOrders(int pageNumber, int size);
+     List<OrderResponse> getAllBorrowedOrders(int pageNumber, int size);
 }

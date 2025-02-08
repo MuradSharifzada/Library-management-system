@@ -94,13 +94,15 @@
 
             <!-- ✅ Authors List -->
             <p><strong>✍ Authors:</strong>
-                <span th:if="${not #lists.isEmpty(book.authorNames)}">
-                    <span th:each="author, iterStat : ${book.authorNames}">
-                        <span th:text="${author}"></span><span th:if="${!iterStat.last}">, </span>
-                    </span>
+                <span th:if="${not #lists.isEmpty(authors)}">
+                         <span th:each="author, iterStat : ${authors}">
+                             <span th:text="${author.firstName + ' ' + author.lastName}"></span>
+                             <span th:if="${!iterStat.last}">, </span>
+                         </span>
                 </span>
-                <span th:if="${#lists.isEmpty(book.authorNames)}">No Authors</span>
+                <span th:if="${#lists.isEmpty(authors)}">No Authors</span>
             </p>
+
         </div>
     </div>
 
@@ -111,7 +113,8 @@
 </div>
 
 <!-- ✅ Image Modal (Opens When Clicked) -->
-<div class="modal fade" th:id="'imageModal-' + ${book.id}" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+<div class="modal fade" th:id="'imageModal-' + ${book.id}" tabindex="-1" aria-labelledby="imageModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public synchronized void borrowOrder(OrderRequest request) {
+    public void borrowOrder(OrderRequest request) {
         log.info("Processing borrow request: book ID {}, student ID {}", request.getBookId(), request.getStudentId());
 
         Book book = bookRepository.findById(request.getBookId())
@@ -69,9 +69,11 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalStateException("This book is currently out of stock.");
         }
 
-        if (orderRepository.existsByBookAndStudentAndReturnDateIsNull(book, student)) {
-            log.error("Borrow denied: Student ID {} already borrowed book ID {}", student.getId(), book.getId());
-            throw new IllegalStateException("You have already borrowed this book and have not returned it yet.");
+        boolean hasActiveBorrow = orderRepository.existsByStudentAndReturnDateIsNull(student);
+
+        if (hasActiveBorrow) {
+            log.error("Borrow denied: Student ID {} already has an active borrowed book", student.getId());
+            throw new IllegalStateException("You have already borrowed a book. Please return it before borrowing another.");
         }
 
         Order order = new Order();
@@ -83,15 +85,15 @@ public class OrderServiceImpl implements OrderService {
 
         book.setStockCount(book.getStockCount() - 1);
 
-            bookRepository.save(book);
-            orderRepository.save(order);
+        bookRepository.save(book);
+        orderRepository.save(order);
 
         log.info("Borrow successful: Student ID {}, Book ID {}", student.getId(), book.getId());
     }
 
     @Override
     @Transactional
-    public synchronized void returnOrder(OrderRequest orderRequest) {
+    public void returnOrder(OrderRequest orderRequest) {
         log.info("Processing return request: book ID {}, student ID {}", orderRequest.getBookId(), orderRequest.getStudentId());
 
         Book book = bookRepository.findById(orderRequest.getBookId())

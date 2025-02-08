@@ -41,7 +41,12 @@ public class Book {
     LocalDate publishedTime;
 
     @ToString.Exclude
-    @ManyToMany(mappedBy = "books",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "authors_books",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
     List<Author> authors=new ArrayList<>();
 
     @ManyToOne()

@@ -42,12 +42,10 @@ public class BookResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate publishedTime;
 
-    private String categoryName;
+    String categoryName;
 
     @Schema(description = "List of author IDs.", example = "[1, 3]")
     List<Long> authorIds;
 
-    @Schema(description = "List of author names.", example = "[\"James Clear\"]")
-    List<String> authorNames;
 
 }

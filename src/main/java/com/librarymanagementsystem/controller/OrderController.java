@@ -24,16 +24,13 @@ public class OrderController {
     private final BookService bookService;
     private final StudentService studentService;
 
-
     @GetMapping
-    public String showAllOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model) {
+    public String showAllOrders(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                Model model) {
 
         List<OrderResponse> orders = orderService.getAllOrders(page, size);
-        Long totalOrders = orderService.countOrders();
-        int totalPages = (int) Math.ceil((double) totalOrders / size);
+        int totalPages = (int) Math.ceil((double) orderService.countOrders() / size);
 
         model.addAttribute("orders", orders);
         model.addAttribute("totalPages", totalPages);
@@ -43,34 +40,18 @@ public class OrderController {
         return "order/orders";
     }
 
+
     @GetMapping("/borrow")
-    public String showBorrowPage(
-            @RequestParam(defaultValue = "0") int studentPage,
-            @RequestParam(defaultValue = "10") int studentSize,
-            @RequestParam(defaultValue = "0") int bookPage,
-            @RequestParam(defaultValue = "10") int bookSize,
-            Model model) {
+    public String showBorrowPage(Model model) {
+        int studentCount = Math.toIntExact(studentService.countStudents());
+        int bookCount = Math.toIntExact(bookService.countBooks());
 
-        Page<StudentResponse> students = studentService.getAllStudents(studentPage, studentSize);
-        List<BookResponse> books = bookService.getAllBooks(bookPage, bookSize);
-
-        Long totalStudents = studentService.countStudents();
-        Long totalBooks = bookService.countBooks();
-
-        int totalStudentPages = (int) Math.ceil((double) totalStudents / studentSize);
-        int totalBookPages = (int) Math.ceil((double) totalBooks / bookSize);
+        List<StudentResponse> students = studentService.getAllStudents(0, studentCount).getContent();
+        List<BookResponse> books = bookService.getAllBooks(0, bookCount).getContent();
 
         model.addAttribute("order", new OrderRequest());
         model.addAttribute("students", students);
         model.addAttribute("books", books);
-
-        model.addAttribute("totalStudentPages", totalStudentPages);
-        model.addAttribute("currentStudentPage", studentPage);
-        model.addAttribute("studentSize", studentSize);
-
-        model.addAttribute("totalBookPages", totalBookPages);
-        model.addAttribute("currentBookPage", bookPage);
-        model.addAttribute("bookSize", bookSize);
 
         return "order/borrow-order";
     }
@@ -82,32 +63,22 @@ public class OrderController {
         return "redirect:/orders";
     }
 
-
     @GetMapping("/return")
-    public String showReturnPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model) {
+    public String showReturnPage(Model model) {
 
-        List<OrderResponse> borrowedOrders = orderService.getAllBorrowedOrders(page, size);
-        Long totalOrders = orderService.countOrders();
-        int totalPages = (int) Math.ceil((double) totalOrders / size);
+        List<OrderResponse> borrowedOrders = orderService.getAllBorrowedOrders(0, Integer.MAX_VALUE);
 
         model.addAttribute("borrowedOrders", borrowedOrders);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", size);
+        model.addAttribute("hasBorrowedOrders", !borrowedOrders.isEmpty());
 
         return "order/return-order";
     }
 
 
-
     @PostMapping("/return")
-    public String returnOrder(
-            @RequestParam Long orderId,
-            @RequestParam Long studentId,
-            @RequestParam Long bookId) {
+    public String returnOrder(@RequestParam Long orderId,
+                              @RequestParam Long studentId,
+                              @RequestParam Long bookId) {
 
         OrderRequest returnRequest = new OrderRequest();
         returnRequest.setStudentId(studentId);

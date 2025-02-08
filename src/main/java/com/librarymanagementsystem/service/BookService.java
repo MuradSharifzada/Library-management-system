@@ -11,14 +11,13 @@ import java.util.List;
 public interface BookService {
     void createBook(BookRequest request,MultipartFile file);
 
-    List<BookResponse> getAllBooks(int pageNumber, int size);
+    Page<BookResponse> getAllBooks(int pageNumber, int size);
 
     BookResponse getBookById(Long id);
 
     void deleteBookById(Long id);
 
     void updateBook(Long id, BookRequest request,MultipartFile file);
-
 
     void uploadBookImage(Long id, MultipartFile file) throws IOException;
 
