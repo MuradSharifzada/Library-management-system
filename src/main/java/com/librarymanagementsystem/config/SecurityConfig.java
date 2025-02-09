@@ -29,7 +29,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/authenticate", "/books", "/books/{id}", "/books/{id}/image", "/home", "/").permitAll()
-                        .requestMatchers("/books/add", "/books/update/{id}", "/books/delete/{id}").hasRole("ADMIN")
+                        .requestMatchers("/books/add", "/books/update/{id}", "/books/delete/{id},/librarians/**").hasRole("ADMIN")
+                        .requestMatchers("/books/add").hasRole("LIBRARIAN")
+
                         .anyRequest().authenticated()
                 )
 

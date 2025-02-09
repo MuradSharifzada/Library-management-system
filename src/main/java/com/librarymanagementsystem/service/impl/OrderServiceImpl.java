@@ -2,7 +2,7 @@ package com.librarymanagementsystem.service.impl;
 
 import com.librarymanagementsystem.dto.request.OrderRequest;
 import com.librarymanagementsystem.dto.response.OrderResponse;
-import com.librarymanagementsystem.exception.IllegalStateException;
+import com.librarymanagementsystem.exception.CustomIllegalStateException;
 import com.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.librarymanagementsystem.mapper.OrderMapper;
 import com.librarymanagementsystem.model.entity.Book;
@@ -66,14 +66,14 @@ public class OrderServiceImpl implements OrderService {
 
         if (book.getStockCount() <= 0) {
             log.error("Borrow denied: Book ID {} is out of stock", book.getId());
-            throw new IllegalStateException("This book is currently out of stock.");
+            throw new CustomIllegalStateException("This book is currently out of stock.");
         }
 
         boolean hasActiveBorrow = orderRepository.existsByStudentAndReturnDateIsNull(student);
 
         if (hasActiveBorrow) {
             log.error("Borrow denied: Student ID {} already has an active borrowed book", student.getId());
-            throw new IllegalStateException("You have already borrowed a book. Please return it before borrowing another.");
+            throw new CustomIllegalStateException("You have already borrowed a book. Please return it before borrowing another.");
         }
 
         Order order = new Order();

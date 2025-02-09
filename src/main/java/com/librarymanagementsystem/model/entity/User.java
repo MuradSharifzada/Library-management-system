@@ -1,4 +1,4 @@
-package com.librarymanagementsystem.model;
+package com.librarymanagementsystem.model.entity;
 
 import com.librarymanagementsystem.model.enums.Role;
 import jakarta.persistence.*;
@@ -26,7 +26,8 @@ public class User {
     String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role=Role.ADMIN;
+    @Column(name = "role", nullable = false)
+    private Role role;
 
      boolean locked=false;
 

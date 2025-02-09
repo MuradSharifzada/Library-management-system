@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException.class,
             ResourceAlreadyExistsException.class,
             InsufficientCountException.class,
-            IllegalStateException.class
+            CustomIllegalStateException.class
     })
     public String handleCustomExceptions(Exception ex, Model model) {
         log.error("Custom Exception Caught: {}", ex.getMessage(), ex);
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
             return "This item already exists!";
         } else if (ex instanceof InsufficientCountException) {
             return "Not Enough Stock Available";
-        } else if (ex instanceof IllegalStateException) {
+        } else if (ex instanceof CustomIllegalStateException) {
             return "Action Not Allowed";
         }
         return "Something went wrong!";
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
             return "This item already exists in our system. Try using a different one.";
         } else if (ex instanceof InsufficientCountException) {
             return "Oops! We don’t have enough stock available for your request. Please try again with fewer items.";
-        } else if (ex instanceof IllegalStateException) {
+        } else if (ex instanceof CustomIllegalStateException) {
             return "You have already borrowed this book and need to return it before borrowing again.";
         }
         return "Something went wrong on our end. Please refresh the page or try again later. If the issue persists, contact support.";

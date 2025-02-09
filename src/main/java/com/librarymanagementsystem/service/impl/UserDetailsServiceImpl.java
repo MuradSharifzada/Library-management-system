@@ -1,6 +1,6 @@
 package com.librarymanagementsystem.service;
 
-import com.librarymanagementsystem.model.User;
+import com.librarymanagementsystem.model.entity.User;
 import com.librarymanagementsystem.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
