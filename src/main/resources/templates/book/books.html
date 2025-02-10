@@ -106,9 +106,10 @@
         </a>
     </div>
 
-    <div class="text-center d-flex justify-content-center gap-3"  sec:authorize="hasRole('ADMIN')" >
+    <div class="text-center d-flex justify-content-center gap-3" sec:authorize="hasAnyRole('ADMIN', 'LIBRARIAN')"  >
         <a href="/books/add" class="btn btn-success">➕ Add New Book</a>
-        <a href="/admin" class="btn btn-primary">Go to Admin Panel</a>
+        <a href="/admin" class="btn btn-primary"sec:authorize="hasRole('ADMIN')">Go to Admin Panel</a>
+        <a href="/admin" class="btn btn-primary"sec:authorize="hasRole('LIBRARIAN')">Go to Library Dashboard</a>
     </div>
 
 

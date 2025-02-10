@@ -130,14 +130,15 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container" sec:authorize="hasAnyRole('ADMIN', 'LIBRARIAN')">
     <div class="card">
         <h2>📖 Authors List</h2>
 
         <!-- Action Buttons -->
-        <div class="btn-container">
-            <a href="/authors/new" class="btn btn-primary">➕ Add New Author</a>
-            <a href="/admin" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">🔧 Admin Panel</a>
+        <div class="btn-container" >
+            <a href="/authors/add" class="btn btn-primary">➕ Add New Author</a>
+            <a href="/admin" class="btn btn-primary" sec:authorize="hasRole('ADMIN')">🔧 Admin Panel</a>
+            <a href="/admin" class="btn btn-primary"sec:authorize="hasRole('LIBRARIAN')">Go to Library Dashboard</a>
         </div>
 
         <!-- Authors Table -->
@@ -156,9 +157,12 @@
                 <td th:text="${author.firstName + ' ' + author.lastName}"></td>
                 <td th:text="${author.birthDay}"></td>
                 <td>
-                    <a th:href="@{/authors/update/{id}(id=${author.id})}" class="btn btn-edit btn-action">✏ Edit</a>
-                    <a th:href="@{/authors/details/{id}(id=${author.id})}" class="btn btn-details btn-action">🔍 Details</a>
-                    <a th:href="@{/authors/delete/{id}(id=${author.id})}" class="btn btn-delete btn-action">🗑 Delete</a>
+                    <a th:href="@{/authors/details/{id}(id=${author.id})}" class="btn btn-details btn-action">🔍
+                        Details</a>
+                    <a th:href="@{/authors/update/{id}(id=${author.id})}" class="btn btn-edit btn-action"
+                       sec:authorize="hasRole('ADMIN')">✏ Edit</a>
+                    <a th:href="@{/authors/delete/{id}(id=${author.id})}" class="btn btn-delete btn-action"
+                       sec:authorize="hasRole('ADMIN')">🗑 Delete</a>
                 </td>
             </tr>
             </tbody>
@@ -167,7 +171,8 @@
         <!-- Pagination -->
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" class="page-item" th:classappend="${i == currentPage} ? 'active'">
+                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" class="page-item"
+                    th:classappend="${i == currentPage} ? 'active'">
                     <a class="page-link" th:href="@{/authors(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
                 </li>
             </ul>

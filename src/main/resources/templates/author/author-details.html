@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>📖 Author Details</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -108,9 +108,9 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="btn-container">
+        <div class="btn-container" >
             <a href="/authors" class="btn btn-back">🔙 Back to List</a>
-            <a th:href="@{/authors/edit/{id}(id=${author.id})}" class="btn btn-edit">✏ Edit Author</a>
+            <a th:href="@{/authors/edit/{id}(id=${author.id})}" class="btn btn-edit" sec:authorize="hasRole('ADMIN')">✏ Edit Author</a>
         </div>
     </div>
 </div>

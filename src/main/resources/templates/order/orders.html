@@ -110,9 +110,9 @@
 
     <!-- Action Buttons -->
     <div class="btn-container">
-        <a href="/orders/borrow" class="btn btn-action btn-borrow">➕ Borrow a Book</a>
-        <a href="/orders/return" class="btn btn-action btn-return">✔ Return a Book</a>
-        <a href="/admin" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">Go to Admin Panel</a>
+        <a href="/orders/borrow" class="btn btn-action btn-borrow" sec:authorize="hasAnyRole('ADMIN', 'LIBRARIAN')">➕ Borrow a Book</a>
+        <a href="/orders/return" class="btn btn-action btn-return" sec:authorize="hasAnyRole('ADMIN', 'LIBRARIAN')">✔ Return a Book</a>
+        <a href="/admin" class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN', 'LIBRARIAN')">Go to Admin Panel</a>
     </div>
 
     <!-- Orders Table -->

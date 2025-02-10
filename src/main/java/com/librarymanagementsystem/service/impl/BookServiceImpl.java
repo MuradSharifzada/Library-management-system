@@ -145,9 +145,7 @@ public class BookServiceImpl implements BookService {
             existingBook.setCategory(category);
         }
 
-        System.out.println("Author ids null gelir "+request.getAuthorIds());
         if (request.getAuthorIds() != null && !request.getAuthorIds().isEmpty()) {
-            System.out.println("-----------------------------------------------------");
             List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
             existingBook.setAuthors(authors);
         }
@@ -169,7 +167,6 @@ public class BookServiceImpl implements BookService {
             log.info("No new image uploaded. Keeping existing image.");
         }
 
-        // ✅ Save the book with updated category and authors
         bookRepository.save(existingBook);
         log.info("Book updated successfully with name: {}", request.getName());
     }
