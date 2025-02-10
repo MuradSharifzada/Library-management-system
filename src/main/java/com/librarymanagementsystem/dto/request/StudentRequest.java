@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of a student.")
-@Validated
+@Builder
 public class StudentRequest {
 
     @Size(min = 7, message = "Student FIN must be at least 7 characters long.")

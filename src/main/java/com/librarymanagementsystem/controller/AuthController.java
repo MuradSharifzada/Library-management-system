@@ -30,4 +30,5 @@ public class AuthController {
         authService.login(request, session);
         return "redirect:/admin";
     }
+
 }

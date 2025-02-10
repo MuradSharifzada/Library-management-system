@@ -17,10 +17,7 @@ import com.librarymanagementsystem.service.CategoryService;
 import com.librarymanagementsystem.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -84,7 +81,7 @@ public class BookServiceImpl implements BookService {
     public Page<BookResponse> getAllBooks(int pageNumber, int size) {
         log.info("Trying to retrieve all books with page number: {}", pageNumber);
 
-        Pageable pageable = PageRequest.of(pageNumber, size);
+        Pageable pageable = PageRequest.of( pageNumber, size, Sort.by(Sort.Direction.DESC, "id"));
 
         Page<Book> books = bookRepository.findAll(pageable);
 

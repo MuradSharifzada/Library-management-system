@@ -1,7 +1,7 @@
 package com.librarymanagementsystem.service.impl;
 
 import com.librarymanagementsystem.dto.request.LoginRequest;
-import com.librarymanagementsystem.model.User;
+import com.librarymanagementsystem.model.entity.User;
 import com.librarymanagementsystem.repository.UserRepository;
 import com.librarymanagementsystem.service.AuthService;
 import jakarta.servlet.http.HttpSession;

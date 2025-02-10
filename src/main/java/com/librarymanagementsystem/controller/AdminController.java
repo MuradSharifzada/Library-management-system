@@ -16,6 +16,7 @@ public class AdminController {
     private final StudentService studentService;
     private final OrderService orderService;
     private final CategoryService categoryService;
+    private final LibrarianService librarianService;
 
 
 
@@ -26,6 +27,7 @@ public class AdminController {
         model.addAttribute("totalOrders", orderService.countOrders());
         model.addAttribute("totalAuthors", authorService.countAuthors());
         model.addAttribute("totalCategories",categoryService.countCategories());
+        model.addAttribute("totalLibrarians",librarianService.countLibrarians());
 
         return "admin-dashboard";
     }
