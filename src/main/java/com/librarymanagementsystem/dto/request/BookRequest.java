@@ -5,8 +5,7 @@ import com.librarymanagementsystem.service.BookService;
 import com.librarymanagementsystem.validation.UniqueTitle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -15,6 +14,9 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of a Book.")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BookRequest {
 
 

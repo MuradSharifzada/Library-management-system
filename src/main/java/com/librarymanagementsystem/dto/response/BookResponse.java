@@ -3,6 +3,7 @@ package com.librarymanagementsystem.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of a book.")
+@Builder
 public class BookResponse {
 
     @Schema(description = "The unique identifier of the book.", example = "1")

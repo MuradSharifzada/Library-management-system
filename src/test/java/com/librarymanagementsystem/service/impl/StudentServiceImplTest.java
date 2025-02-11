@@ -1,4 +1,4 @@
-package com.librarymanagementsystem.service;
+package com.librarymanagementsystem.service.impl;
 
 import com.librarymanagementsystem.dto.request.StudentRequest;
 import com.librarymanagementsystem.dto.response.StudentResponse;
@@ -7,7 +7,6 @@ import com.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.librarymanagementsystem.mapper.StudentMapper;
 import com.librarymanagementsystem.model.entity.Student;
 import com.librarymanagementsystem.repository.StudentRepository;
-import com.librarymanagementsystem.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
