@@ -5,8 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -14,6 +13,9 @@ import java.time.LocalDate;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of an Author.")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthorRequest {
 
     @NotBlank(message = "First name must not be empty.")

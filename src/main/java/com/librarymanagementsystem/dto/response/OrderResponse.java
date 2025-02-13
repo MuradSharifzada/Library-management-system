@@ -3,8 +3,7 @@ package com.librarymanagementsystem.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.librarymanagementsystem.model.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
@@ -12,6 +11,9 @@ import java.time.LocalDateTime;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Represents the details of an order.")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderResponse {
 
     @Schema(description = "The unique identifier of the order.", example = "1")

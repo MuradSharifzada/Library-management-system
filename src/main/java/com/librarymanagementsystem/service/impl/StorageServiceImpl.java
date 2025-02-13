@@ -99,7 +99,7 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
-    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+    public File convertMultiPartToFile(MultipartFile file) throws IOException {
         log.debug("Converting MultipartFile to File...");
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         try (FileOutputStream fos = new FileOutputStream(convFile)) {
