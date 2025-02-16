@@ -5,9 +5,10 @@ stages:
 # Build Job
 build-job:
   stage: build
-  image: openjdk:17  
+  image: azul/zulu-openjdk:17 
   script:
     - echo "Starting build for Library Management System..."
+    - chmod +x ./gradlew  
     - ./gradlew clean build --no-daemon
   artifacts:
     paths:
@@ -17,11 +18,11 @@ build-job:
 # Unit Test Job
 unit-test-job:
   stage: test
-  image: openjdk:17
+  image: azul/zulu-openjdk:17
   script:
-    - echo "Running unit tests..."
+    - echo "Running unit tests for Library Management System..."
+    - chmod +x ./gradlew
     - ./gradlew test --no-daemon
-    - echo "All unit tests passed successfully!"
   artifacts:
     reports:
       junit: build/test-results/test/TEST-*.xml
