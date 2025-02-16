@@ -1,29 +1,35 @@
+services:
+  - name: postgres:14
+    alias: postgres
+    environment:
+      POSTGRES_DB: library_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+variables:
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/library_db"
+  SPRING_DATASOURCE_USERNAME: "postgres"
+  SPRING_DATASOURCE_PASSWORD: "postgres"
+
 stages:
   - build
   - test
 
-# Build Job
 build-job:
   stage: build
-  image: azul/zulu-openjdk:17 
+  image: azul/zulu-openjdk:17
   script:
-    - echo "Starting build for Library Management System..."
-    - chmod +x ./gradlew  
+    - chmod +x ./gradlew
     - ./gradlew clean build --no-daemon
   artifacts:
     paths:
       - build/libs/
-    when: always
 
-# Unit Test Job
 unit-test-job:
   stage: test
   image: azul/zulu-openjdk:17
   script:
-    - echo "Running unit tests for Library Management System..."
-    - chmod +x ./gradlew
     - ./gradlew test --no-daemon
   artifacts:
     reports:
       junit: build/test-results/test/TEST-*.xml
-    when: always
