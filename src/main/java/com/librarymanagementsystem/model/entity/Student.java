@@ -40,9 +40,7 @@ public class Student {
     @Column(length = 15, nullable = false)
     String studentGroup;
 
-
     LocalDate birthDate;
-
 
     @Builder.Default
     LocalDateTime enrollmentDate = LocalDateTime.now();

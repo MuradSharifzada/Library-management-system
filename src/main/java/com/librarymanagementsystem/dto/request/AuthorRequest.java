@@ -36,5 +36,4 @@ public class AuthorRequest {
     @Size(max = 200, message = "Invalid biography: Length must not exceed 200 characters.")
     @Schema(description = "A brief biography of the author.", example = "James Clear is the author of Atomic Habits, a bestseller on building good habits.")
     String biography;
-
 }

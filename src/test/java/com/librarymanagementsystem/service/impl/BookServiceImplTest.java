@@ -147,35 +147,6 @@ class BookServiceImplTest {
 
     }
 
-//    @Test
-//    void givenUploadBookImage_WhenImageUploadFails_ThenThrowImageProcessingException() throws IOException {
-//        when(bookRepository.findByIsbn(bookRequest.getIsbn())).thenReturn(Optional.empty());
-//        when(bookMapper.requestToEntity(bookRequest)).thenReturn(book);
-//        when(categoryService.getCategoryById(bookRequest.getCategoryId())).thenReturn(categoryResponse);
-//        when(authorService.getauthorsbyids(bookRequest.getAuthorIds())).thenReturn(authors);
-//        when(bookRepository.save(book)).thenReturn(book);
-//
-//        when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
-//
-//        doThrow(new IOException("File upload failed")).when(storageService).uploadFile(file);
-//
-//        ImageProcessingException exception = assertThrows(
-//                ImageProcessingException.class,
-//                () -> bookService.createBook(bookRequest, file)
-//        );
-//
-//        assertEquals("Image not uploaded for book id:" + book.getId(), exception.getMessage());
-//
-//        verify(bookRepository, times(1)).save(any(Book.class));
-//
-//        verify(storageService, times(1)).uploadFile(file);
-//
-//    }
-
-
-
-
-
 
     @Test
     void givenGetAllBooks_WhenBooksExist_ThenReturnPaginatedBookResponses() {

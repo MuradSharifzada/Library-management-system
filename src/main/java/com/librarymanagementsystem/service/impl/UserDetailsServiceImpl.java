@@ -1,4 +1,4 @@
-package com.librarymanagementsystem.service;
+package com.librarymanagementsystem.service.impl;
 
 import com.librarymanagementsystem.model.entity.User;
 import com.librarymanagementsystem.repository.UserRepository;

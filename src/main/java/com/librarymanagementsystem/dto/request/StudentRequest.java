@@ -21,7 +21,7 @@ import java.time.LocalDate;
 public class StudentRequest {
 
     @Size(min = 7, message = "Student FIN must be at least 7 characters long.")
-    @UniqueTitle(entity = StudentService.class, message = "Student FIN must be unique.", groups = Create.class)
+    @UniqueTitle(entity = StudentService.class, message = "Student FIN must be unique.")
     @Schema(description = "fin", example = "FIN1234")
     String fin;
 

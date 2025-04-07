@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,8 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderResponse> getAllOrders(int pageNumber, int pageSize) {
         log.info("Fetching orders: page {}, size {}", pageNumber, pageSize);
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC,"status"));
+
         Page<Order> orders = orderRepository.findAll(pageable);
 
         if (!orders.hasContent()) {

@@ -39,8 +39,4 @@ public class Author {
     @ToString.Exclude
     @ManyToMany(mappedBy = "authors", cascade = CascadeType.MERGE)
     List<Book> books=new ArrayList<>();
-
-
-
-
 }

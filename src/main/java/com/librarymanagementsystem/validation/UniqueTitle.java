@@ -15,9 +15,9 @@ public @interface UniqueTitle {
 
     String message() default "Title must be unique";
 
-    Class<?> entity();
-
     Class<?>[] groups() default {};
+
+    Class<?> entity();
 
     Class<? extends Payload>[] payload() default {};
 }

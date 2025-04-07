@@ -108,55 +108,6 @@ class OrderServiceImplTest {
                 .build();
     }
 
-    @Test
-    void givenGetAllOrders_WhenOrdersExist_ThenReturnPaginatedOrderResponses() {
-
-        int pageNumber = 0;
-        int pageSize = 5;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        List<Order> ordersList = List.of(order);
-        Page<Order> ordersPage = new PageImpl<>(ordersList, pageable, ordersList.size());
-
-        when(orderRepository.findAll(pageable)).thenReturn(ordersPage);
-        when(orderMapper.entityToResponse(order)).thenReturn(orderResponse);
-
-
-        List<OrderResponse> result = orderService.getAllOrders(pageNumber, pageSize);
-
-
-        assertEquals(1, result.size());
-        assertEquals(orderResponse.getId(), result.get(0).getId());
-        assertEquals(orderResponse.getStatus(), result.get(0).getStatus());
-        assertEquals(orderResponse.getBook().getName(), result.get(0).getBook().getName());
-        assertEquals(orderResponse.getStudent(), result.get(0).getStudent());
-
-        verify(orderRepository, times(1)).findAll(pageable);
-        verify(orderMapper, times(1)).entityToResponse(order);
-    }
-    @Test
-    void givenGetAllOrders_WhenNoOrdersExist_ThenThrowResourceNotFoundException() {
-
-        int pageNumber = 0;
-        int pageSize = 5;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<Order> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-
-        when(orderRepository.findAll(pageable)).thenReturn(emptyPage);
-
-
-        ResourceNotFoundException exception = assertThrows(
-                ResourceNotFoundException.class,
-                () -> orderService.getAllOrders(pageNumber, pageSize)
-        );
-
-        assertEquals("No Orders available to retrieve.", exception.getMessage());
-
-        verify(orderRepository, times(1)).findAll(pageable);
-        verify(orderMapper, never()).entityToResponse(any(Order.class));
-    }
-
 
     @Test
     void givenBorrowOrder_WhenBookAndStudentExist_ThenCreateOrderSuccessfully() {

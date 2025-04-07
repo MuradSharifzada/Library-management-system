@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
         } else if (ex instanceof ResourceAlreadyExistsException) {
             return "This item already exists in our system. Try using a different one.";
         } else if (ex instanceof InsufficientCountException) {
-            return "Oops! We don’t have enough stock available for your request. Please try again with fewer items.";
+            return "We don’t have enough stock available for your request. Please try again with fewer items.";
         } else if (ex instanceof CustomIllegalStateException) {
             return "You have already borrowed this book and need to return it before borrowing again.";
         }

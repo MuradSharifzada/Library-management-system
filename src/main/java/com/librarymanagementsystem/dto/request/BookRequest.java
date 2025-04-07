@@ -22,8 +22,8 @@ public class BookRequest {
 
     @Size(max = 255, message = "Book name must not exceed 255 characters.")
     @Schema(description = "The name of the book.", example = "Atomic Habits")
-    @NotBlank(groups = Create.class)
-    @UniqueTitle(entity = BookService.class, message = "Book name must be unique.",groups = Create.class)
+    @NotBlank(message = "Book Name must not be blank")
+    @UniqueTitle(entity = BookService.class, message = "Book name must be unique.")
     String name;
 
     @NotBlank(message = "ISBN must not be blank.")

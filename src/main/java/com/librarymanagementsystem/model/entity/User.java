@@ -27,8 +27,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role;
-
-     boolean locked=false;
-
-};
+    Role role;
+    boolean locked = false;
+}

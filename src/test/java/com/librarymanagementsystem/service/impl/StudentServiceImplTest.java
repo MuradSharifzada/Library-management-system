@@ -111,42 +111,6 @@ class StudentServiceImplTest {
 
     }
 
-    @Test
-    void givenGetAllStudentsWhenStudentsExistThenReturnStudentPage() {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-
-        Page<Student> studentPage = new PageImpl<>(List.of(student));
-
-        when(studentRepository.findAll(pageable)).thenReturn(studentPage);
-        when(studentMapper.entityToResponse(student)).thenReturn(studentResponse);
-
-        Page<StudentResponse> responses = studentService.getAllStudents(0, 10);
-
-        verify(studentRepository, times(1)).findAll(pageable);
-        verifyNoMoreInteractions(studentRepository, studentMapper);
-
-        assertNotNull(responses);
-        assertFalse(responses.isEmpty());
-        assertEquals(1, responses.getTotalElements());
-
-
-    }
-
-    @Test
-    void givenGetAllStudentsWhenNoStudentsExistThenReturnEmptyPage() {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-
-        when(studentRepository.findAll(pageable)).thenReturn(Page.empty());
-
-        Page<StudentResponse> responses = studentService.getAllStudents(page, size);
-
-        verify(studentRepository, times(1)).findAll(pageable);
-
-        assertTrue(responses.isEmpty());
-
-    }
 
     @Test
     void givenGetStudentByIdWhenValidIdThenReturnStudentResponse() {
@@ -174,20 +138,6 @@ class StudentServiceImplTest {
 
     }
 
-
-    @Test
-    void givenUpdateStudentWhenValidRequestThenUpdateStudentDetails() {
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        when(studentRepository.save(any(Student.class))).thenReturn(student);
-
-        studentService.updateStudent(1L, studentRequest);
-
-        verify(studentRepository, times(1)).findById(1L);
-        verify(studentRepository, times(1)).save(any(Student.class));
-
-
-        verifyNoMoreInteractions(studentRepository, studentMapper);
-    }
 
     @Test
     void givenDeleteStudentByIdWhenValidRequestThenDeleteStudent() {

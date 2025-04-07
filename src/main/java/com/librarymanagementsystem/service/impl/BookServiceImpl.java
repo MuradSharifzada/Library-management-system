@@ -46,7 +46,6 @@ public class BookServiceImpl implements BookService {
             throw new ResourceAlreadyExistsException("Book ISBN already exists: " + request.getIsbn());
         }
 
-
         Book book = bookMapper.requestToEntity(request);
 
         CategoryResponse categoryResponse = categoryService.getCategoryById(request.getCategoryId());
@@ -54,10 +53,8 @@ public class BookServiceImpl implements BookService {
         category.setId(categoryResponse.getId());
         book.setCategory(category);
 
-
         List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
         book.setAuthors(authors);
-
 
         book = bookRepository.save(book);
 
@@ -71,8 +68,6 @@ public class BookServiceImpl implements BookService {
 
             }
         }
-
-
         log.info("Successfully created new book with name: {}", request.getName());
     }
 
@@ -131,7 +126,6 @@ public class BookServiceImpl implements BookService {
     public void updateBook(Long id, BookRequest request, MultipartFile file) {
         log.info("Trying to update book with id: {}", id);
 
-
         Book existingBook = bookRepository.findById(id).orElseThrow(() -> {
             log.info("Book not found for update with id: {}", id);
             return new ResourceNotFoundException("Book not found for update with id: " + id);
@@ -144,13 +138,10 @@ public class BookServiceImpl implements BookService {
             category.setId(categoryResponse.getId());
             existingBook.setCategory(category);
         }
-
         if (request.getAuthorIds() != null && !request.getAuthorIds().isEmpty()) {
             List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
             existingBook.setAuthors(authors);
         }
-
-
         if (file != null && !file.isEmpty()) {
             try {
                 String newFileName = storageService.uploadFile(file);

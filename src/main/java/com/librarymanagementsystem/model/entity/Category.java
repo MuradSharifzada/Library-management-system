@@ -15,7 +15,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -32,7 +31,4 @@ public class Category {
 
     @OneToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST}, mappedBy = "category")
     List<Book> books;
-
-
-
 }

@@ -1,6 +1,5 @@
 package com.librarymanagementsystem.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +30,6 @@ public class Book {
     @Column(nullable = false)
     String description;
 
-
     String bookImage;
 
     @Column(nullable = false)
@@ -47,7 +45,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    List<Author> authors=new ArrayList<>();
+    List<Author> authors = new ArrayList<>();
 
     @ManyToOne()
     @JoinColumn(name = "category_id", referencedColumnName = "id")
@@ -55,6 +53,5 @@ public class Book {
 
     @OneToMany(mappedBy = "book")
     List<Order> orders;
-
 
 }

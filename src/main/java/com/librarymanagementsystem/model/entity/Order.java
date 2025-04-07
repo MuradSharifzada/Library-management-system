@@ -23,11 +23,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     @Column(nullable = false)
     @CreationTimestamp
     LocalDateTime orderDate;
-
 
     @Column(nullable = false)
     LocalDateTime returnDate;
@@ -42,6 +40,4 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     Status status;
-
-
 }

@@ -44,7 +44,7 @@ public class StudentServiceImpl implements StudentService {
     public Page<StudentResponse> getAllStudents(int page, int size) {
         log.info("Trying to retrieve all students with page {}", page);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
 
         log.info("Retrieved students (page: {}, size: {})", page, size);
         return studentRepository
@@ -75,31 +75,22 @@ public class StudentServiceImpl implements StudentService {
         });
 
         if (!existingStudent.getFin().equals(request.getFin())) {
-            Optional<Student> studentWithSameFin = studentRepository.findByFin(request.getFin());
-            if (studentWithSameFin.isPresent()) {
+            if (studentRepository.findByFin(request.getFin()).isPresent()) {
                 throw new ResourceAlreadyExistsException("Student FIN must be unique.");
             }
             existingStudent.setFin(request.getFin());
         }
 
-        if (!existingStudent.getEmail().equals(request.getEmail())) {
-            Optional<Student> studentWithSameEmail = studentRepository.findByEmail(request.getEmail());
-            if (studentWithSameEmail.isPresent()) {
-                throw new ResourceAlreadyExistsException("Student Email must be unique.");
-            }
-            existingStudent.setEmail(request.getEmail());
-        }
+        Student updatedStudent = studentMapper.requestToEntity(request);
 
+        updatedStudent.setId(existingStudent.getId());
+        updatedStudent.setFin(existingStudent.getFin());
+        updatedStudent.setEmail(existingStudent.getEmail());
 
-        existingStudent.setFirstName(request.getFirstName());
-        existingStudent.setLastName(request.getLastName());
-        existingStudent.setPhoneNumber(request.getPhoneNumber());
-        existingStudent.setStudentGroup(request.getStudentGroup());
-        existingStudent.setBirthDate(request.getBirthDate());
-
-        studentRepository.save(existingStudent);
+        studentRepository.save(updatedStudent);
         log.info("Successfully updated Student with id: {}", id);
     }
+
 
     @Override
     public void deleteStudentById(Long id) {
@@ -117,7 +108,5 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Long countStudents() {
-        return studentRepository.count();
-    }
+    public Long countStudents() {return studentRepository.count();}
 }
