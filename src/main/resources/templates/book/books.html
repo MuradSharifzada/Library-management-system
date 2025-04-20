@@ -5,10 +5,25 @@
     <title>📚 Books</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
     <style>
         body { background-color: #f8f9fa; }
         .container { margin-top: 40px; }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+
+            .content {
+                margin-left: 0;
+                padding-left: 10px;
+            }
+        }
 
 
         .sidebar {
@@ -113,19 +128,25 @@
     </div>
 
 
+
     <form action="/books" method="get" class="search-box">
         <input type="text" name="name" placeholder="🔍 Search by book title..." class="form-control" th:value="${searchQuery}">
         <button type="submit" class="btn btn-info">Search</button>
+
+
+        <a href="/books" class="btn btn-secondary">Clear Search</a>
     </form>
 
 
-    <div class="text-center mb-3" th:if="${selectedCategory != null and not #lists.isEmpty(books)}">
+    <div class="text-center mb-3"
+         th:if="${selectedCategory != null and currentPage == 0 and not #lists.isEmpty(books)}">
         <h4 class="text-info">📚 Showing books in category: <span th:text="${selectedCategory}"></span></h4>
     </div>
 
 
+
     <div class="row">
-        <div class="col-md-3 mb-4" th:each="book : ${books}">
+        <div class="col-12 col-sm-6 col-md-3 mb-4" th:each="book : ${books}">
             <div class="book-card">
                 <a th:href="@{/books/{id}(id=${book.id})}">
                     <img th:if="${book.bookImage != null and book.bookImage != ''}"
@@ -150,25 +171,21 @@
             </div>
         </div>
 
-        <!-- Show message when no books are found -->
         <div class="col-12 text-center mt-4" th:if="${#lists.isEmpty(books)}">
             <h4 class="text-muted">
-                <!-- If searching by book title -->
+
                 <span th:if="${searchQuery != null and not #strings.isEmpty(searchQuery)}">
             ❌ No books available for "<span th:text="${searchQuery}"></span>" in the library.
         </span>
 
-                <!-- If filtering by category -->
                 <span th:if="${selectedCategory != null and not #strings.isEmpty(selectedCategory)}">
             ❌ No books found for category "<span th:text="${selectedCategory}"></span>".
         </span>
 
-                <!-- If searching by book name inside a category -->
                 <span th:if="${searchQuery != null and selectedCategory != null}">
             ❌ No books available for "<span th:text="${searchQuery}"></span>" in category "<span th:text="${selectedCategory}"></span>".
         </span>
 
-                <!-- If no books exist at all -->
                 <span th:if="${(searchQuery == null or #strings.isEmpty(searchQuery)) and (selectedCategory == null or #strings.isEmpty(selectedCategory))}">
             ❌ No books available in the library.
         </span>
@@ -178,7 +195,6 @@
 
 
     </div>
-    <!-- Pagination -->
     <div class="d-flex justify-content-center mt-4">
         <ul class="pagination">
             <!-- Page Numbers (Shows 5 pages at a time for better UI) -->
@@ -191,6 +207,13 @@
     </div>
 
 </div>
+
+<script>
+    function clearSearch() {
+        document.querySelector('input[name="name"]').value = '';
+        window.location.href = '/books';
+    }
+</script>
 
 </body>
 </html>

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 @Table(name = "books")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

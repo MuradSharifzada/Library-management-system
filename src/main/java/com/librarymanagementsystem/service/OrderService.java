@@ -11,7 +11,7 @@ public interface OrderService {
 
     void borrowOrder(OrderRequest request);
 
-    void returnOrder(OrderRequest orderRequest);
+    void returnOrder(Long studentId, Long bookId);
 
     Long countOrders();
 

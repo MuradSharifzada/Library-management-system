@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderResponse> getAllOrders(int pageNumber, int pageSize) {
         log.info("Fetching orders: page {}, size {}", pageNumber, pageSize);
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC,"status"));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "status"));
 
         Page<Order> orders = orderRepository.findAll(pageable);
 
@@ -78,12 +78,7 @@ public class OrderServiceImpl implements OrderService {
             throw new CustomIllegalStateException("You have already borrowed a book. Please return it before borrowing another.");
         }
 
-        Order order = new Order();
-        order.setBook(book);
-        order.setStudent(student);
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(Status.BORROWED);
-        order.setReturnDate(null);
+        Order order = orderMapper.toOrder(request, book, student);
 
         book.setStockCount(book.getStockCount() - 1);
 
@@ -95,28 +90,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void returnOrder(OrderRequest orderRequest) {
-        log.info("Processing return request: book ID {}, student ID {}", orderRequest.getBookId(), orderRequest.getStudentId());
+    public void returnOrder(Long studentId, Long bookId) {
+        log.info("Processing return request: book ID {}, student ID {}", bookId, studentId);
 
-        Book book = bookRepository.findById(orderRequest.getBookId())
+        Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> {
-                    log.error("Book not found for return: ID {}", orderRequest.getBookId());
-                    return new ResourceNotFoundException("Book with ID " + orderRequest.getBookId() + " not found");
+                    log.error("Book not found for return: ID {}", bookId);
+                    return new ResourceNotFoundException("Book with ID " + bookId + " not found");
                 });
 
-        Student student = studentRepository.findById(orderRequest.getStudentId())
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> {
-                    log.error("Student not found for return: ID {}", orderRequest.getStudentId());
-                    return new ResourceNotFoundException("Student with ID " + orderRequest.getStudentId() + " not found");
+                    log.error("Student not found for return: ID {}", studentId);
+                    return new ResourceNotFoundException("Student with ID " + studentId + " not found");
                 });
 
-        Order order = orderRepository.findByStudentIdAndBookIdAndReturnDateIsNull(
-                orderRequest.getStudentId(),
-                orderRequest.getBookId()
-        ).orElseThrow(() -> {
-            log.error("No active order found for return: Student ID {}, Book ID {}", orderRequest.getStudentId(), orderRequest.getBookId());
-            return new ResourceNotFoundException("No active borrowing record found for this student and book.");
-        });
+        Order order = orderRepository.findByStudentIdAndBookIdAndReturnDateIsNull(studentId, bookId)
+                .orElseThrow(() -> {
+                    log.error("No active order found for return: Student ID {}, Book ID {}", studentId, bookId);
+                    return new ResourceNotFoundException("No active borrowing record found for this student and book.");
+                });
 
         order.setReturnDate(LocalDateTime.now());
         order.setStatus(Status.RETURNED);
@@ -127,6 +120,7 @@ public class OrderServiceImpl implements OrderService {
         bookRepository.save(book);
         log.info("Stock updated: Book ID {}, current stock {}", book.getId(), book.getStockCount());
     }
+
 
     @Override
     public Long countOrders() {

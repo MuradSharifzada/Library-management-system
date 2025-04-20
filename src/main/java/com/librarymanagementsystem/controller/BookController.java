@@ -44,6 +44,7 @@ public class BookController {
         model.addAttribute("pageSize", size);
         model.addAttribute("selectedCategory", category);
         model.addAttribute("categories", categoryService.getAllCategory(0, Integer.MAX_VALUE));
+        model.addAttribute("searchQuery", name);
 
         return "book/books";
     }

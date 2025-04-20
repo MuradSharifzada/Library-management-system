@@ -80,11 +80,8 @@ public class OrderController {
                               @RequestParam Long studentId,
                               @RequestParam Long bookId) {
 
-        OrderRequest returnRequest = new OrderRequest();
-        returnRequest.setStudentId(studentId);
-        returnRequest.setBookId(bookId);
-
-        orderService.returnOrder(returnRequest);
+        orderService.returnOrder(studentId, bookId);
         return "redirect:/orders";
     }
+
 }

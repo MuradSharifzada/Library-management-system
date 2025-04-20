@@ -17,6 +17,8 @@ import com.librarymanagementsystem.service.CategoryService;
 import com.librarymanagementsystem.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,40 +38,6 @@ public class BookServiceImpl implements BookService {
     private final StorageService storageService;
     private final CategoryService categoryService;
     private final AuthorService authorService;
-
-
-    @Override
-    public void createBook(BookRequest request, MultipartFile file) {
-        log.info("Trying to create a new book with name: {}", request.getName());
-
-        if (bookRepository.findByIsbn(request.getIsbn()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Book ISBN already exists: " + request.getIsbn());
-        }
-
-        Book book = bookMapper.requestToEntity(request);
-
-        CategoryResponse categoryResponse = categoryService.getCategoryById(request.getCategoryId());
-        Category category = new Category();
-        category.setId(categoryResponse.getId());
-        book.setCategory(category);
-
-        List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
-        book.setAuthors(authors);
-
-        book = bookRepository.save(book);
-
-        if (file != null && !file.isEmpty()) {
-            try {
-                uploadBookImage(book.getId(), file);
-
-            } catch (IOException e) {
-                log.error("Error occurred while uploading image: {}", e.getMessage());
-                throw new ImageProcessingException("Image not uploaded for book id:" + book.getId());
-
-            }
-        }
-        log.info("Successfully created new book with name: {}", request.getName());
-    }
 
 
     @Override
@@ -271,6 +239,40 @@ public class BookServiceImpl implements BookService {
 
         return books.map(bookMapper::entityToResponse);
     }
+
+    @Override
+    public void createBook(BookRequest request, MultipartFile file) {
+        log.info("Trying to create a new book with name: {}", request.getName());
+
+        if (bookRepository.findByIsbn(request.getIsbn()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Book ISBN already exists: " + request.getIsbn());
+        }
+
+        Book book = bookMapper.requestToEntity(request);
+
+        CategoryResponse categoryResponse = categoryService.getCategoryById(request.getCategoryId());
+        Category category = new Category();
+        category.setId(categoryResponse.getId());
+        book.setCategory(category);
+
+        List<Author> authors = authorService.getauthorsbyids(request.getAuthorIds());
+        book.setAuthors(authors);
+
+        book = bookRepository.save(book);
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                uploadBookImage(book.getId(), file);
+
+            } catch (IOException e) {
+                log.error("Error occurred while uploading image: {}", e.getMessage());
+                throw new ImageProcessingException("Image not uploaded for book id:" + book.getId());
+
+            }
+        }
+        log.info("Successfully created new book with name: {}", request.getName());
+    }
+
 
 
 }

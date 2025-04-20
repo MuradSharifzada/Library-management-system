@@ -10,6 +10,8 @@ import com.librarymanagementsystem.repository.CategoryRepository;
 import com.librarymanagementsystem.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,19 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    @Override
+    public CategoryResponse getCategoryById(Long id) {
+        log.info("Attempting to retrieve category with ID: {}", id);
+
+        Category category = categoryRepository.findById(id).orElseThrow(() -> {
+            log.error("Category retrieval failed - category with ID: {} not found", id);
+            return new ResourceNotFoundException("Category not found with ID: " + id);
+        });
+
+        log.info("Successfully retrieved category with ID: {}", id);
+
+        return categoryMapper.entityToResponse(category);
+    }
 
     @Override
     public Page<CategoryResponse> getAllCategory(int pageNumber, int pageSize) {
@@ -72,19 +87,6 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Successfully updated category with ID: {}", id);
     }
 
-    @Override
-    public CategoryResponse getCategoryById(Long id) {
-        log.info("Attempting to retrieve category with ID: {}", id);
-
-        Category category = categoryRepository.findById(id).orElseThrow(() -> {
-            log.error("Category retrieval failed - category with ID: {} not found", id);
-            return new ResourceNotFoundException("Category not found with ID: " + id);
-        });
-
-        log.info("Successfully retrieved category with ID: {}", id);
-
-        return categoryMapper.entityToResponse(category);
-    }
 
     @Override
     public void deleteCategoryById(Long id) {
@@ -99,6 +101,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(category.getId());
 
     }
+
     @Override
     public Long countCategories() {
         return categoryRepository.count();

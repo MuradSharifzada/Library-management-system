@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
+
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 @Getter
 @Setter
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
