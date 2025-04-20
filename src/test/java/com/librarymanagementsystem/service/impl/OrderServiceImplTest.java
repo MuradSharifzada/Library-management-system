@@ -112,22 +112,34 @@ class OrderServiceImplTest {
     @Test
     void givenBorrowOrder_WhenBookAndStudentExist_ThenCreateOrderSuccessfully() {
 
-        when(bookRepository.findById(orderRequest.getBookId())).thenReturn(Optional.of(book));
-        when(studentRepository.findById(orderRequest.getStudentId())).thenReturn(Optional.of(student));
+        Long bookId = orderRequest.getBookId();
+        Long studentId = orderRequest.getStudentId();
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
         when(orderRepository.existsByStudentAndReturnDateIsNull(student)).thenReturn(false);
+        Order order = new Order();
+        order.setBook(book);
+        order.setStudent(student);
+        order.setStatus(Status.BORROWED);
+
+        when(orderMapper.toOrder(any(), eq(book), eq(student))).thenReturn(order);
+
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
         orderService.borrowOrder(orderRequest);
 
-
-        verify(bookRepository, times(1)).findById(orderRequest.getBookId());
-        verify(studentRepository, times(1)).findById(orderRequest.getStudentId());
+        // Assert
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(studentRepository, times(1)).findById(studentId);
         verify(orderRepository, times(1)).existsByStudentAndReturnDateIsNull(student);
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(bookRepository, times(1)).save(book);
         assertEquals(4, book.getStockCount());
     }
+
+
 
     @Test
     void givenBorrowOrder_WhenBookDoesNotExist_ThenThrowResourceNotFoundException() {
@@ -204,15 +216,19 @@ class OrderServiceImplTest {
 
     @Test
     void givenReturnOrder_WhenOrderExists_ThenReturnOrderSuccessfully() {
+        // Arrange
+        Long studentId = orderRequest.getStudentId();
+        Long bookId = orderRequest.getBookId();
 
-        when(bookRepository.findById(orderRequest.getBookId())).thenReturn(Optional.of(book));
-        when(studentRepository.findById(orderRequest.getStudentId())).thenReturn(Optional.of(student));
-        when(orderRepository.findByStudentIdAndBookIdAndReturnDateIsNull(orderRequest.getStudentId(), orderRequest.getBookId()))
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        when(orderRepository.findByStudentIdAndBookIdAndReturnDateIsNull(studentId, bookId))
                 .thenReturn(Optional.of(order));
 
+        // Act
+        orderService.returnOrder(studentId, bookId);
 
-        orderService.returnOrder(orderRequest);
-
+        // Assert
         assertNotNull(order.getReturnDate());
         assertEquals(Status.RETURNED, order.getStatus());
         verify(orderRepository, times(1)).save(order);
@@ -220,58 +236,72 @@ class OrderServiceImplTest {
         assertEquals(6, book.getStockCount());
     }
 
+
     @Test
     void givenReturnOrder_WhenBookDoesNotExist_ThenThrowResourceNotFoundException() {
         // Arrange
-        when(bookRepository.findById(orderRequest.getBookId())).thenReturn(Optional.empty());
+        Long studentId = orderRequest.getStudentId();
+        Long bookId = orderRequest.getBookId();
 
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        // Act and Assert
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
-                () -> orderService.returnOrder(orderRequest)
+                () -> orderService.returnOrder(studentId, bookId)
         );
 
-        assertEquals("Book with ID " + orderRequest.getBookId() + " not found", exception.getMessage());
-        verify(bookRepository, times(1)).findById(orderRequest.getBookId());
+        assertEquals("Book with ID " + bookId + " not found", exception.getMessage());
+        verify(bookRepository, times(1)).findById(bookId);
         verify(studentRepository, never()).findById(anyLong());
         verify(orderRepository, never()).findByStudentIdAndBookIdAndReturnDateIsNull(anyLong(), anyLong());
     }
 
 
+
     @Test
     void givenReturnOrder_WhenStudentDoesNotExist_ThenThrowResourceNotFoundException() {
-        when(bookRepository.findById(orderRequest.getBookId())).thenReturn(Optional.of(book));
-        when(studentRepository.findById(orderRequest.getStudentId())).thenReturn(Optional.empty());
+        // Arrange
+        Long studentId = orderRequest.getStudentId();
+        Long bookId = orderRequest.getBookId();
 
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
+        // Act and Assert
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
-                () -> orderService.returnOrder(orderRequest)
+                () -> orderService.returnOrder(studentId, bookId)
         );
 
-        assertEquals("Student with ID " + orderRequest.getStudentId() + " not found", exception.getMessage());
-        verify(bookRepository, times(1)).findById(orderRequest.getBookId());
-        verify(studentRepository, times(1)).findById(orderRequest.getStudentId());
+        assertEquals("Student with ID " + studentId + " not found", exception.getMessage());
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(studentRepository, times(1)).findById(studentId);
         verify(orderRepository, never()).findByStudentIdAndBookIdAndReturnDateIsNull(anyLong(), anyLong());
     }
 
+
     @Test
     void givenReturnOrder_WhenNoActiveOrderExists_ThenThrowResourceNotFoundException() {
+        // Arrange
+        Long studentId = orderRequest.getStudentId();
+        Long bookId = orderRequest.getBookId();
 
-        when(bookRepository.findById(orderRequest.getBookId())).thenReturn(Optional.of(book));
-        when(studentRepository.findById(orderRequest.getStudentId())).thenReturn(Optional.of(student));
-        when(orderRepository.findByStudentIdAndBookIdAndReturnDateIsNull(orderRequest.getStudentId(), orderRequest.getBookId()))
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        when(orderRepository.findByStudentIdAndBookIdAndReturnDateIsNull(studentId, bookId))
                 .thenReturn(Optional.empty());
 
-
+        // Act and Assert
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
-                () -> orderService.returnOrder(orderRequest)
+                () -> orderService.returnOrder(studentId, bookId)
         );
 
         assertEquals("No active borrowing record found for this student and book.", exception.getMessage());
-        verify(bookRepository, times(1)).findById(orderRequest.getBookId());
-        verify(studentRepository, times(1)).findById(orderRequest.getStudentId());
-        verify(orderRepository, times(1)).findByStudentIdAndBookIdAndReturnDateIsNull(orderRequest.getStudentId(), orderRequest.getBookId());
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(studentRepository, times(1)).findById(studentId);
+        verify(orderRepository, times(1)).findByStudentIdAndBookIdAndReturnDateIsNull(studentId, bookId);
     }
 
 
